@@ -1,5 +1,5 @@
 # DENAVES 
-*A fun simple shmup*
+# A fun simple shmup
 
 Let's make a shmup game in a couple of days!
 

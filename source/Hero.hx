@@ -6,6 +6,7 @@ import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.effects.FlxFlicker;
 import flixel.group.FlxGroup.FlxTypedGroup;
+import flixel.math.FlxAngle;
 import flixel.math.FlxMath;
 import flixel.math.FlxPoint;
 import flixel.util.FlxTimer;
@@ -64,31 +65,23 @@ class Hero extends FlxSprite
 		velocity.x = 0;
 		velocity.y = 0;
 
-		// UPLEFT = -4, UP = -3, UPRIGHT = -2, LEFT = 1, RIGHT = 1, DOWNLEFT = 2, DOWN = 3, DOWNRIGHT = 4
-		var directions = [225, 270, 315, 180, 0, 0, 135, 90, 45];
 		var h_axis = boolToInt(right) - boolToInt(left);
-		var v_axis = (boolToInt(down) - boolToInt(up)) * 3;
-		var _direction = directions[h_axis + v_axis + 4]; // add 4 to start array index at 0, not -4;
-		var MOVE_LEFT = if (animation.name != "MOVE_LEFT") "TURN_LEFT" else "MOVE_LEFT";
-		var MOVE_RIGHT = if (animation.name != "MOVE_RIGHT") "TURN_RIGHT" else "MOVE_RIGHT";
-		var animations = [
-			MOVE_LEFT,
-			"MOVE_UP",
-			MOVE_RIGHT,
-			MOVE_LEFT,
-			"IDLE",
-			MOVE_RIGHT,
-			MOVE_LEFT,
-			"MOVE_UP",
-			MOVE_RIGHT
-		];
-		var _animation = animations[h_axis + v_axis + 4]; // add 4 to start array index at 0, not -4;
-		velocity.set(Math.min(SPEED, Math.abs((h_axis + v_axis) * SPEED)), 0);
-		velocity.rotate(FlxPoint.weak(0, 0), _direction);
+		var v_axis = boolToInt(down) - boolToInt(up);
 
-		animation.play(_animation);
+		var direction = FlxAngle.getPolarCoords(h_axis, v_axis, FlxPoint.weak(0, 0)).y;
+		var isMoving = h_axis != 0 || v_axis != 0;
 
-		return up || down || left || right;
+		velocity.set(isMoving ? SPEED : 0, 0);
+		velocity.rotate(FlxPoint.weak(0, 0), direction);
+
+		// animations
+		var MOVE_LEFT = animation.name != "MOVE_LEFT" ? "TURN_LEFT" : "MOVE_LEFT";
+		var MOVE_RIGHT = animation.name != "MOVE_RIGHT" ? "TURN_RIGHT" : "MOVE_RIGHT";
+		var MOVE_UP = "MOVE_UP";
+		var animations = [MOVE_RIGHT, MOVE_RIGHT, MOVE_UP, MOVE_LEFT, MOVE_LEFT];
+		animation.play(isMoving ? animations[Std.int(Math.abs(direction / 45))] : "IDLE");
+
+		return isMoving;
 	}
 
 	function shootBullets(power:Int = 1)

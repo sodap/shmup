@@ -10,3 +10,6 @@
 - ~~Add HeroBullets~~
 - ~~Add Power level~~
 - ~~Constrain Hero movement to game bounds~~
+- ~~Simplify Hero movement code~~
+- Add Small Plane Class
+- Fix Hero lateral movement on bounds

@@ -5,6 +5,7 @@ import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.effects.FlxFlicker;
+import flixel.math.FlxMath;
 import flixel.math.FlxPoint;
 import flixel.util.FlxTimer;
 import lime.utils.Assets;
@@ -12,6 +13,9 @@ import lime.utils.Assets;
 class Hero extends FlxSprite
 {
 	var autoShootTimer:FlxTimer;
+	var SPEED:Float = 180;
+	var powerLevel:Int = 1;
+	final maxPower:Int = 8;
 
 	public function new(x:Float = 0, y:Float = 0)
 	{
@@ -49,24 +53,11 @@ class Hero extends FlxSprite
 
 	function boolToInt(_bool:Bool):Int
 	{
-		if (_bool)
-			return 1;
-		else
-			return 0;
+		_bool ? return 1 : return 0;
 	}
 
-	function handleMovement()
+	function handleMovement(up:Bool, down:Bool, left:Bool, right:Bool):Bool
 	{
-		var up:Bool = false;
-		var down:Bool = false;
-		var left:Bool = false;
-		var right:Bool = false;
-
-		up = FlxG.keys.anyPressed([UP, W]);
-		down = FlxG.keys.anyPressed([DOWN, S]);
-		left = FlxG.keys.anyPressed([LEFT, A]);
-		right = FlxG.keys.anyPressed([RIGHT, D]);
-
 		velocity.x = 0;
 		velocity.y = 0;
 
@@ -74,7 +65,7 @@ class Hero extends FlxSprite
 		var directions = [225, 270, 315, 180, 0, 0, 135, 90, 45];
 		var h_axis = boolToInt(right) - boolToInt(left);
 		var v_axis = (boolToInt(down) - boolToInt(up)) * 3;
-		var _direction = directions[h_axis + v_axis + 4];
+		var _direction = directions[h_axis + v_axis + 4]; // add 4 to start array index at 0, not -4;
 		var MOVE_LEFT = if (animation.name != "MOVE_LEFT") "TURN_LEFT" else "MOVE_LEFT";
 		var MOVE_RIGHT = if (animation.name != "MOVE_RIGHT") "TURN_RIGHT" else "MOVE_RIGHT";
 		var animations = [
@@ -88,28 +79,51 @@ class Hero extends FlxSprite
 			"MOVE_UP",
 			MOVE_RIGHT
 		];
-		var _animation = animations[h_axis + v_axis + 4];
-		velocity.set(Math.min(100, Math.abs((h_axis + v_axis) * 100)), 0);
+		var _animation = animations[h_axis + v_axis + 4]; // add 4 to start array index at 0, not -4;
+		velocity.set(Math.min(SPEED, Math.abs((h_axis + v_axis) * SPEED)), 0);
 		velocity.rotate(FlxPoint.weak(0, 0), _direction);
 
 		animation.play(_animation);
+
+		return up || down || left || right;
 	}
 
 	function shootBullets(power:Int = 1)
 	{
-		var _shoot = FlxG.keys.anyPressed([CONTROL]) && !autoShootTimer.active;
-		if (_shoot)
+		trace('power: $powerLevel');
+		for (i in 0...(power % 2))
 		{
 			var _newBullet = new HeroBullet(x, y - HeroBullet.BULLET_HEIGHT);
 			FlxG.state.add(_newBullet);
-			autoShootTimer.start(0.2);
 		}
+
+		for (i in 1...Std.int(power / (2)) + 1)
+		{
+			var _newBullet = new HeroBullet(x - i * 5, y - HeroBullet.BULLET_HEIGHT + i * 3);
+			FlxG.state.add(_newBullet);
+			_newBullet = new HeroBullet(x + i * 5, y - HeroBullet.BULLET_HEIGHT + i * 3);
+			FlxG.state.add(_newBullet);
+		}
+
+		autoShootTimer.start(0.2);
 	}
 
 	override public function update(elapsed:Float)
 	{
 		super.update(elapsed);
-		handleMovement();
-		shootBullets();
+
+		var up:Bool = FlxG.keys.anyPressed([UP, W]);
+		var down:Bool = FlxG.keys.anyPressed([DOWN, S]);
+		var left:Bool = FlxG.keys.anyPressed([LEFT, A]);
+		var right:Bool = FlxG.keys.anyPressed([RIGHT, D]);
+
+		var _move = handleMovement(up, down, left, right);
+		if (FlxG.keys.anyPressed([CONTROL]) && !autoShootTimer.active)
+			shootBullets(powerLevel);
+		powerLevel = Std.int(FlxMath.bound(powerLevel + boolToInt(FlxG.keys.anyJustPressed([PAGEDOWN])) - boolToInt(FlxG.keys.anyJustPressed([PAGEUP])), 1,
+			maxPower));
+
+		x = FlxMath.bound(x, 0, FlxG.width - 4);
+		y = FlxMath.bound(y, 0, FlxG.height - 20);
 	}
 }

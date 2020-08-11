@@ -7,4 +7,6 @@
 - ~~Add Movement Controls~~
 - ~~Animate Hero class~~
 - ~~Flicker Hero on spawn~~
-- Add HeroBullets
+- ~~Add HeroBullets~~
+- ~~Add Power level~~
+- ~~Constrain Hero movement to game bounds~~

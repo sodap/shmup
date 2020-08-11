@@ -5,6 +5,7 @@ import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.effects.FlxFlicker;
+import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.math.FlxMath;
 import flixel.math.FlxPoint;
 import flixel.util.FlxTimer;
@@ -16,10 +17,12 @@ class Hero extends FlxSprite
 	var SPEED:Float = 180;
 	var powerLevel:Int = 1;
 	final maxPower:Int = 8;
+	var bullets:FlxTypedGroup<HeroBullet>;
 
-	public function new(x:Float = 0, y:Float = 0)
+	public function new(x:Float = 0, y:Float = 0, bullets)
 	{
 		super(x, y);
+		this.bullets = bullets;
 		loadGraphic(AssetPaths.hero_aircraft__png, true, 29, 29);
 		width = 4;
 		height = 4;
@@ -93,15 +96,18 @@ class Hero extends FlxSprite
 		trace('power: $powerLevel');
 		for (i in 0...(power % 2))
 		{
-			var _newBullet = new HeroBullet(x, y - HeroBullet.BULLET_HEIGHT);
+			var _newBullet = bullets.recycle(HeroBullet);
+			_newBullet.start(x, y - HeroBullet.BULLET_HEIGHT);
 			FlxG.state.add(_newBullet);
 		}
 
 		for (i in 1...Std.int(power / (2)) + 1)
 		{
-			var _newBullet = new HeroBullet(x - i * 5, y - HeroBullet.BULLET_HEIGHT + i * 3);
+			var _newBullet = bullets.recycle(HeroBullet);
+			_newBullet.start(x - i * 5, y - HeroBullet.BULLET_HEIGHT + i * 3);
 			FlxG.state.add(_newBullet);
-			_newBullet = new HeroBullet(x + i * 5, y - HeroBullet.BULLET_HEIGHT + i * 3);
+			_newBullet = bullets.recycle(HeroBullet);
+			_newBullet.start(x + i * 5, y - HeroBullet.BULLET_HEIGHT + i * 3);
 			FlxG.state.add(_newBullet);
 		}
 

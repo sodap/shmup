@@ -17,11 +17,19 @@ class HeroBullet extends FlxSprite
 	{
 		super(x, y);
 		loadGraphic(AssetPaths.hero_bullet__png, false, BULLET_WIDTH, BULLET_HEIGHT);
+		start(x, y);
+	}
+
+	public function start(x:Float = 0, y:Float = 0)
+	{
+		reset(x, y);
 		velocity.set(0, SPEED);
 	}
 
 	override public function update(elapsed:Float)
 	{
 		super.update(elapsed);
+		if (y + height < 0)
+			kill();
 	}
 }

@@ -10,7 +10,8 @@ class PlayState extends FlxState
 	override public function create()
 	{
 		super.create();
-		background = new FlxBackdrop("assets/images/background.png", 0, -4, true, true, 0, 0);
+		background = new FlxBackdrop("assets/images/background.png", 0, 0, true, true, 0, 0);
+		background.velocity.set(0, 48);
 		add(background);
 	}
 

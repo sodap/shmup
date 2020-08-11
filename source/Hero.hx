@@ -79,16 +79,9 @@ class Hero extends FlxSprite
 			"MOVE_UP"
 		];
 		var _animation = animations[h_axis + v_axis + 4];
+		velocity.set(Math.min(100, Math.abs((h_axis + v_axis) * 100)), 0);
+		velocity.rotate(FlxPoint.weak(0, 0), _direction);
 
-		if (h_axis + v_axis != 0)
-		{
-			velocity.set(100, 0);
-			velocity.rotate(FlxPoint.weak(0, 0), _direction);
-		}
-		else
-		{
-			velocity.set(0, 0);
-		}
 		animation.play(_animation);
 	}
 

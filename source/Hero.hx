@@ -1,18 +1,27 @@
 package;
 
+import HeroBullet;
 import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.effects.FlxFlicker;
 import flixel.math.FlxPoint;
+import flixel.util.FlxTimer;
 import lime.utils.Assets;
 
 class Hero extends FlxSprite
 {
+	var autoShootTimer:FlxTimer;
+
 	public function new(x:Float = 0, y:Float = 0)
 	{
 		super(x, y);
 		loadGraphic(AssetPaths.hero_aircraft__png, true, 29, 29);
+		width = 4;
+		height = 4;
+		centerOffsets();
+		offset.y -= 4;
+
 		setFacingFlip(FlxObject.LEFT, false, false);
 		setFacingFlip(FlxObject.RIGHT, false, false);
 		animation.add("TURN_RIGHT", [4, 8], 5, false);
@@ -24,6 +33,7 @@ class Hero extends FlxSprite
 		animation.play("IDLE");
 		animation.finishCallback = onAnimationFinished;
 		FlxFlicker.flicker(this, 2);
+		autoShootTimer = new FlxTimer();
 	}
 
 	function onAnimationFinished(_anim_name:String)
@@ -85,9 +95,21 @@ class Hero extends FlxSprite
 		animation.play(_animation);
 	}
 
+	function shootBullets(power:Int = 1)
+	{
+		var _shoot = FlxG.keys.anyPressed([CONTROL]) && !autoShootTimer.active;
+		if (_shoot)
+		{
+			var _newBullet = new HeroBullet(x, y - HeroBullet.BULLET_HEIGHT);
+			FlxG.state.add(_newBullet);
+			autoShootTimer.start(0.2);
+		}
+	}
+
 	override public function update(elapsed:Float)
 	{
 		super.update(elapsed);
 		handleMovement();
+		shootBullets();
 	}
 }

@@ -1,5 +1,5 @@
-- Create HaxeFlixel project
-- Create playstate class
+- ~~Create HaxeFlixel project~~
+- ~~Create playstate class~~
 - Add scrolling background
 - Create hero class
   - Add invincibility on spawn (with flicker)

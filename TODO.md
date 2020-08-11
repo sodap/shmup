@@ -11,5 +11,9 @@
 - ~~Add Power level~~
 - ~~Constrain Hero movement to game bounds~~
 - ~~Simplify Hero movement code~~
-- Add Small Plane Class
+- ~~Add Small Plane Class~~
+- Improve Spawning
+- Add explosion FX
+- Add enemy parent class
+- Improve Small Plane Behavior
 - Fix Hero lateral movement on bounds

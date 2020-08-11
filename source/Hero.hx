@@ -91,17 +91,17 @@ class Hero extends FlxSprite
 		{
 			var _newBullet = bullets.recycle(HeroBullet);
 			_newBullet.start(x, y - HeroBullet.BULLET_HEIGHT);
-			FlxG.state.add(_newBullet);
+			bullets.add(_newBullet);
 		}
 
 		for (i in 1...Std.int(power / (2)) + 1)
 		{
 			var _newBullet = bullets.recycle(HeroBullet);
 			_newBullet.start(x - i * 5, y - HeroBullet.BULLET_HEIGHT + i * 3);
-			FlxG.state.add(_newBullet);
+			bullets.add(_newBullet);
 			_newBullet = bullets.recycle(HeroBullet);
 			_newBullet.start(x + i * 5, y - HeroBullet.BULLET_HEIGHT + i * 3);
-			FlxG.state.add(_newBullet);
+			bullets.add(_newBullet);
 		}
 
 		autoShootTimer.start(0.2);

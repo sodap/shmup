@@ -15,9 +15,9 @@ class Hero extends FlxSprite
 		loadGraphic(AssetPaths.hero_aircraft__png, true, 29, 29);
 		setFacingFlip(FlxObject.LEFT, false, false);
 		setFacingFlip(FlxObject.RIGHT, false, false);
-		animation.add("TURN_RIGHT", [4, 8], 10, false);
+		animation.add("TURN_RIGHT", [4, 8], 5, false);
 		animation.add("MOVE_RIGHT", [7, 8], 10, true);
-		animation.add("TURN_LEFT", [10, 14], 10, false);
+		animation.add("TURN_LEFT", [10, 14], 5, false);
 		animation.add("MOVE_LEFT", [13, 14], 10, true);
 		animation.add("MOVE_UP", [1, 2], 10, true);
 		animation.add("IDLE", [0], 10, false);
@@ -74,9 +74,9 @@ class Hero extends FlxSprite
 			MOVE_LEFT,
 			"IDLE",
 			MOVE_RIGHT,
+			MOVE_LEFT,
 			"MOVE_UP",
-			"MOVE_UP",
-			"MOVE_UP"
+			MOVE_RIGHT
 		];
 		var _animation = animations[h_axis + v_axis + 4];
 		velocity.set(Math.min(100, Math.abs((h_axis + v_axis) * 100)), 0);

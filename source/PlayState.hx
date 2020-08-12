@@ -13,10 +13,11 @@ class PlayState extends FlxState
 	var background:FlxBackdrop;
 	var hero:Hero;
 	var heroBullets:FlxTypedGroup<HeroBullet>;
+	var enemyBullets:FlxTypedGroup<EnemyBullet>;
 	var explosions:FlxTypedGroup<Explosion>;
 	var smallPlanes:FlxTypedGroup<SmallPlane>;
 	var enemies:FlxTypedGroup<Enemy>;
-	var rank:Int = 1;
+	var rank:Int = 8;
 
 	override public function create()
 	{
@@ -34,6 +35,9 @@ class PlayState extends FlxState
 		enemies = new FlxTypedGroup();
 		add(enemies);
 
+		enemyBullets = new FlxTypedGroup();
+		add(enemyBullets);
+
 		explosions = new FlxTypedGroup();
 		add(explosions);
 
@@ -49,6 +53,14 @@ class PlayState extends FlxState
 			addEnemy(30 + 20 * i, -50, 2, SmallPlane);
 			addEnemy(FlxG.width / 2 - 10 + 20 * i, -50, 2, SmallPlane);
 			addEnemy(FlxG.width - 30 - 20 * i, -50, 2, SmallPlane);
+		}
+
+		for (i in 1...5)
+		{
+			addEnemy(FlxG.width + 5, 220, 3 * i, MediumPlane, enemyBullets);
+			addEnemy(FlxG.width + 5, 180, 3 * i, MediumPlane, enemyBullets);
+			addEnemy(FlxG.width + 5, 140, 3 * i, MediumPlane, enemyBullets);
+			addEnemy(-26, 200, 3 * i, MediumPlane, enemyBullets);
 		}
 
 		addEnemy(80, -50, 2.5, SmallPlane);
@@ -78,9 +90,9 @@ class PlayState extends FlxState
 		addEnemy(FlxG.width / 2, -50, 14.5, SmallPlane);
 	}
 
-	function addEnemy(x:Float, y:Float, time:Float, ObjectClass:Class<Enemy>)
+	function addEnemy(x:Float, y:Float, time:Float, ObjectClass:Class<Enemy>, bulletGroup:FlxTypedGroup<EnemyBullet> = null)
 	{
-		var _newPlane = Type.createInstance(ObjectClass, [x, y, time, rank]);
+		var _newPlane = Type.createInstance(ObjectClass, [x, y, time, rank, bulletGroup]);
 		enemies.add(_newPlane);
 	}
 
@@ -88,6 +100,7 @@ class PlayState extends FlxState
 	{
 		super.update(elapsed);
 		FlxG.overlap(heroBullets, enemies, destroyEnemy);
+		FlxG.overlap(enemyBullets, hero, killHero);
 		FlxG.overlap(enemies, hero, killHero);
 	}
 

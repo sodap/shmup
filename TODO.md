@@ -17,6 +17,6 @@
 - ~~Improve Small Plane Behavior~~
 - ~~Add explosion FX~~
 - ~~Fix Hero lateral movement on bounds (DONT)~~
-- Add Medium Plane Class
-- Add Enemy Bullet Class
+- ~~Add Medium Plane Class~~
+- ~~Add Enemy Bullet Class~~
 - Add Red Small Plane Class

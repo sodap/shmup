@@ -11,7 +11,7 @@ class HeroBullet extends FlxSprite
 {
 	public static var BULLET_HEIGHT = 15;
 	public static var BULLET_WIDTH = 3;
-	public static var SPEED = -250;
+	public static var SPEED = -300;
 
 	public function new(x:Float = 0, y:Float = 0)
 	{

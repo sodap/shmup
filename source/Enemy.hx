@@ -4,6 +4,7 @@ import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.effects.FlxFlicker;
+import flixel.group.FlxGroup;
 import flixel.math.FlxPoint;
 import flixel.util.FlxTimer;
 import lime.utils.Assets;
@@ -13,11 +14,13 @@ class Enemy extends FlxSprite
 	public var SPEED = 40;
 
 	var rank:Int = 1;
+	var bullets:FlxGroup; // TypedGroup<EnemyBullet>;
 
-	public function new(x:Float = 0, y:Float = 0, timeToSpawn:Float, rank:Int = 1)
+	public function new(x:Float = 0, y:Float = 0, timeToSpawn:Float, rank:Int = 1, bullets = null)
 	{
 		super(x, y);
 		this.rank = rank;
+		this.bullets = bullets;
 		loadGraphic(AssetPaths.small_plane__png, false, 11, 15);
 		var _spawnTimer = new FlxTimer();
 		_spawnTimer.start(timeToSpawn, spawn, 1);

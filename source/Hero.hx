@@ -128,6 +128,8 @@ class Hero extends FlxSprite
 		var _move = handleMovement(up, down, left, right);
 		if (FlxG.keys.anyPressed([CONTROL]) && !autoShootTimer.active)
 			shootBullets(powerLevel);
+
+		// power level controls (FOR TESTING)
 		powerLevel = Std.int(FlxMath.bound(powerLevel + boolToInt(FlxG.keys.anyJustPressed([PAGEDOWN])) - boolToInt(FlxG.keys.anyJustPressed([PAGEUP])), 1,
 			maxPower));
 

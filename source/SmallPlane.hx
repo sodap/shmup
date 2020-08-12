@@ -33,7 +33,9 @@ class SmallPlane extends Enemy
 
 	function exitScreen(tween:FlxTween):Void
 	{
-		var tween1 = FlxTween.tween(velocity, {y: SPEED * 2}, 2, {ease: FlxEase.expoOut});
+		var orientation = x > FlxG.width / 2 ? 1 : -1;
+		var lateral = (x - FlxG.width / 2) / (FlxG.width / 4);
+		var tween1 = FlxTween.tween(velocity, {x: lateral * SPEED, y: SPEED * 2}, 2, {ease: FlxEase.expoOut});
 	}
 
 	override public function getDamage():Bool

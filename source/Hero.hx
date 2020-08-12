@@ -18,6 +18,9 @@ class Hero extends FlxSprite
 	var SPEED:Float = 180;
 	var powerLevel:Int = 1;
 	final maxPower:Int = 8;
+
+	public var invincible:Bool = true;
+
 	var bullets:FlxTypedGroup<HeroBullet>;
 
 	public function new(x:Float = 0, y:Float = 0, bullets)
@@ -40,8 +43,13 @@ class Hero extends FlxSprite
 		animation.add("IDLE", [0], 10, false);
 		animation.play("IDLE");
 		animation.finishCallback = onAnimationFinished;
-		FlxFlicker.flicker(this, 2);
+		FlxFlicker.flicker(this, 2, 0.04, true, true, onFlickerFinished);
 		autoShootTimer = new FlxTimer();
+	}
+
+	function onFlickerFinished(_flicker:FlxFlicker)
+	{
+		invincible = false;
 	}
 
 	function onAnimationFinished(_anim_name:String)

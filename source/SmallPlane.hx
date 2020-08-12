@@ -36,10 +36,15 @@ class SmallPlane extends Enemy
 		var tween1 = FlxTween.tween(velocity, {y: SPEED * 2}, 2, {ease: FlxEase.expoOut});
 	}
 
-	override public function getDamage()
+	override public function getDamage():Bool
 	{
 		health--;
 		if (health <= 0)
+		{
 			kill();
+			return true;
+		}
+		else
+			return false;
 	}
 }

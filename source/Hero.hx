@@ -15,8 +15,9 @@ import lime.utils.Assets;
 class Hero extends FlxSprite
 {
 	var autoShootTimer:FlxTimer;
+	var FIRE_RATE:Float = 0.15;
 	var SPEED:Float = 180;
-	var powerLevel:Int = 1;
+	var powerLevel:Int = 2;
 	final maxPower:Int = 8;
 
 	public var invincible:Bool = true;
@@ -112,7 +113,7 @@ class Hero extends FlxSprite
 			bullets.add(_newBullet);
 		}
 
-		autoShootTimer.start(0.2);
+		autoShootTimer.start(FIRE_RATE);
 	}
 
 	override public function update(elapsed:Float)

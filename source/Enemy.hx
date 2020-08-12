@@ -35,7 +35,10 @@ class Enemy extends FlxSprite
 		angle = 180;
 	}
 
-	public function getDamage() {}
+	public function getDamage():Bool
+	{
+		return false;
+	}
 
 	override public function update(elapsed:Float)
 	{

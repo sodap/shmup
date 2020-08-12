@@ -13,6 +13,7 @@ class PlayState extends FlxState
 	var background:FlxBackdrop;
 	var hero:Hero;
 	var heroBullets:FlxTypedGroup<HeroBullet>;
+	var explosions:FlxTypedGroup<Explosion>;
 	var smallPlanes:FlxTypedGroup<SmallPlane>;
 	var enemies:FlxTypedGroup<Enemy>;
 	var rank:Int = 1;
@@ -23,16 +24,22 @@ class PlayState extends FlxState
 		background = new FlxBackdrop("assets/images/background.png", 0, 0, true, true, 0, 0);
 		background.velocity.set(0, 48);
 		add(background);
+
 		heroBullets = new FlxTypedGroup();
+		add(heroBullets);
+
 		hero = new Hero(112, 200, heroBullets);
 		add(hero);
-		add(heroBullets);
 
 		enemies = new FlxTypedGroup();
 		add(enemies);
+
+		explosions = new FlxTypedGroup();
+		add(explosions);
+
 		var _timer = new FlxTimer();
 		smallPlaneWave(_timer);
-		_timer.start(19, smallPlaneWave, 4);
+		_timer.start(15, smallPlaneWave, 4);
 	}
 
 	function smallPlaneWave(timer:FlxTimer)
@@ -44,31 +51,31 @@ class PlayState extends FlxState
 			addEnemy(FlxG.width - 30 - 20 * i, -50, 2, SmallPlane);
 		}
 
-		addEnemy(80, -50, 3, SmallPlane);
-		addEnemy(FlxG.width - 80, -50, 3, SmallPlane);
+		addEnemy(80, -50, 2.5, SmallPlane);
+		addEnemy(FlxG.width - 80, -50, 2.5, SmallPlane);
 
 		addEnemy(30, -50, 4, SmallPlane);
-		addEnemy(FlxG.width / 2, -50, 5, SmallPlane);
-		addEnemy(FlxG.width - 30, -50, 6, SmallPlane);
+		addEnemy(FlxG.width / 2, -50, 4, SmallPlane);
+		addEnemy(FlxG.width - 30, -50, 5, SmallPlane);
 
 		addEnemy(30, -50, 8, SmallPlane);
-		addEnemy(FlxG.width - 30, -50, 8, SmallPlane);
-		addEnemy(FlxG.width / 2, -50, 9, SmallPlane);
+		addEnemy(FlxG.width - 30, -50, 7, SmallPlane);
+		addEnemy(FlxG.width / 2, -50, 8, SmallPlane);
 
-		addEnemy(80, -50, 10, SmallPlane);
-		addEnemy(FlxG.width - 80, -50, 10, SmallPlane);
+		addEnemy(80, -50, 9, SmallPlane);
+		addEnemy(FlxG.width - 80, -50, 9, SmallPlane);
 
-		addEnemy(30, -50, 12, SmallPlane);
+		addEnemy(30, -50, 10.5, SmallPlane);
+		addEnemy(FlxG.width / 2, -50, 10.5, SmallPlane);
+		addEnemy(FlxG.width - 30, -50, 10.5, SmallPlane);
+
+		addEnemy(30, -50, 14, SmallPlane);
 		addEnemy(FlxG.width / 2, -50, 12, SmallPlane);
 		addEnemy(FlxG.width - 30, -50, 12, SmallPlane);
 
-		addEnemy(30, -50, 14, SmallPlane);
-		addEnemy(FlxG.width / 2, -50, 14, SmallPlane);
+		addEnemy(30, -50, 13.5, SmallPlane);
 		addEnemy(FlxG.width - 30, -50, 14, SmallPlane);
-
-		addEnemy(30, -50, 17, SmallPlane);
-		addEnemy(FlxG.width - 30, -50, 18, SmallPlane);
-		addEnemy(FlxG.width / 2, -50, 19, SmallPlane);
+		addEnemy(FlxG.width / 2, -50, 14.5, SmallPlane);
 	}
 
 	function addEnemy(x:Float, y:Float, time:Float, ObjectClass:Class<Enemy>)
@@ -88,6 +95,9 @@ class PlayState extends FlxState
 	{
 		if (!hero.invincible)
 		{
+			var _newExplosion = explosions.recycle(Explosion);
+			_newExplosion.start(hero.x, hero.y);
+			explosions.add(_newExplosion);
 			remove(hero);
 			hero.kill();
 			var _timer = new FlxTimer();
@@ -103,7 +113,12 @@ class PlayState extends FlxState
 
 	function destroyEnemy(bullet:HeroBullet, enemy:Enemy)
 	{
-		enemy.getDamage();
+		if (enemy.getDamage())
+		{
+			var _newExplosion = explosions.recycle(Explosion);
+			_newExplosion.start(enemy.x, enemy.y);
+			explosions.add(_newExplosion);
+		}
 		bullet.kill();
 	}
 }

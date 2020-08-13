@@ -20,7 +20,7 @@
 - ~~Add Medium Plane Class~~
 - ~~Add Enemy Bullet Class~~
 - ~~Add Red Small Plane Class~~
-- Add Big Plane Class
+- ~~Add Big Plane Class~~
 - Add Score System
 - Add HUD
 - Add Bombs

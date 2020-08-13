@@ -15,6 +15,7 @@ class Enemy extends FlxSprite
 
 	var rank:Int = 1;
 	var bullets:FlxGroup; // TypedGroup<EnemyBullet>;
+	var started = false;
 
 	public function new(x:Float = 0, y:Float = 0, timeToSpawn:Float, rank:Int = 1, bullets = null)
 	{
@@ -36,6 +37,7 @@ class Enemy extends FlxSprite
 		reset(x, y);
 		velocity.set(SPEED, 0);
 		angle = 180;
+		started = true;
 	}
 
 	public function getDamage():Bool

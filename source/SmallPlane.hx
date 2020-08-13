@@ -33,8 +33,8 @@ class SmallPlane extends Enemy
 
 	function exitScreen(tween:FlxTween):Void
 	{
-		var orientation = x > FlxG.width / 2 ? 1 : -1;
-		var lateral = (x - FlxG.width / 2) / (FlxG.width / 4);
+		var orientation = x > FlxG.width / 2 ? -1 : 1;
+		var lateral = -(x - FlxG.width / 2) / (FlxG.width / 4) * 0.4;
 		var tween1 = FlxTween.tween(velocity, {x: lateral * SPEED, y: SPEED * 2}, 2, {ease: FlxEase.expoOut});
 	}
 

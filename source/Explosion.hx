@@ -22,7 +22,7 @@ class Explosion extends FlxSprite
 
 	public function start(x:Float = 0, y:Float = 0)
 	{
-		reset(x - 16, y - 16);
+		reset(x, y);
 		animation.play("EXPLODE", true);
 	}
 

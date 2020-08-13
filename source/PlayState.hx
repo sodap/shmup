@@ -6,6 +6,7 @@ import flixel.FlxState;
 import flixel.addons.display.FlxBackdrop;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.group.FlxGroup;
+import flixel.math.FlxRandom;
 import flixel.util.FlxTimer;
 
 class PlayState extends FlxState
@@ -17,7 +18,7 @@ class PlayState extends FlxState
 	var explosions:FlxTypedGroup<Explosion>;
 	var smallPlanes:FlxTypedGroup<SmallPlane>;
 	var enemies:FlxTypedGroup<Enemy>;
-	var rank:Int = 4;
+	var rank:Int = 1;
 
 	override public function create()
 	{
@@ -48,6 +49,8 @@ class PlayState extends FlxState
 
 	function smallPlaneWave(timer:FlxTimer)
 	{
+		addEnemy(FlxG.width - 60, FlxG.height + 10, 2.5, BigPlane, enemyBullets);
+
 		for (i in 0...2)
 		{
 			addEnemy(30 + 20 * i, -50, 2, SmallPlane);
@@ -109,7 +112,7 @@ class PlayState extends FlxState
 		if (!hero.invincible)
 		{
 			var _newExplosion = explosions.recycle(Explosion);
-			_newExplosion.start(hero.x, hero.y);
+			_newExplosion.start(hero.x - _newExplosion.width / 2, hero.y - _newExplosion.height / 2);
 			explosions.add(_newExplosion);
 			remove(hero);
 			hero.kill();
@@ -129,8 +132,18 @@ class PlayState extends FlxState
 		if (enemy.getDamage())
 		{
 			var _newExplosion = explosions.recycle(Explosion);
-			_newExplosion.start(enemy.x, enemy.y);
+			var _nx = enemy.getGraphicMidpoint().x - _newExplosion.width / 2;
+			var _ny = enemy.getGraphicMidpoint().y - _newExplosion.height / 2;
+			_newExplosion.start(_nx, _ny);
 			explosions.add(_newExplosion);
+			for (i in 0...0 + 2 * Std.int(enemy.width / 24))
+			{
+				var _newExplosion = explosions.recycle(Explosion);
+				var _nx = enemy.getGraphicMidpoint().x - FlxG.random.float(0, enemy.width / 2) - _newExplosion.width / 2;
+				var _ny = enemy.getGraphicMidpoint().y - FlxG.random.float(0, enemy.height / 2) - _newExplosion.height / 2;
+				_newExplosion.start(_nx, _ny);
+				explosions.add(_newExplosion);
+			}
 		}
 		bullet.kill();
 	}

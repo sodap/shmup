@@ -21,9 +21,9 @@ class MediumPlane extends Enemy
 		SPEED = 80 + 7 * rank;
 		loadGraphic(AssetPaths.medium_plane__png, true, 21, 21);
 		animation.add("NORMAL", [0], 10, true);
-		animation.add("HIT", [1], 10, false);
+		animation.add("HIT", [1], 20, false);
 		animation.play("NORMAL");
-		health = Std.int(1.5 * rank);
+		health = 5 + Std.int(1.5 * rank);
 		animation.finishCallback = onAnimationFinished;
 	}
 
@@ -47,7 +47,6 @@ class MediumPlane extends Enemy
 
 	function shoot(tween:FlxTween)
 	{
-		trace("SHOOT!");
 		if (y < 75 && hasAmmo)
 		{
 			var shotPos = getGraphicMidpoint();

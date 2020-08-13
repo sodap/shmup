@@ -11,11 +11,13 @@ class EnemyBullet extends FlxSprite
 {
 	public static var BULLET_HEIGHT = 7;
 	public static var BULLET_WIDTH = 7;
-	public static var SPEED = 60;
 
-	public function new(x:Float = 0, y:Float = 0, direction:Float = 90)
+	public var SPEED = 60;
+
+	public function new(x:Float = 0, y:Float = 0, direction:Float = 90, speed = 60)
 	{
 		super(x, y);
+		SPEED = speed;
 		loadGraphic(AssetPaths.enemy_bullet__png, true, BULLET_WIDTH, BULLET_HEIGHT);
 		animation.add("NORMAL", [0, 1], 10, true);
 		animation.play("NORMAL");

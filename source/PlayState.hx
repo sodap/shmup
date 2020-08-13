@@ -17,7 +17,7 @@ class PlayState extends FlxState
 	var explosions:FlxTypedGroup<Explosion>;
 	var smallPlanes:FlxTypedGroup<SmallPlane>;
 	var enemies:FlxTypedGroup<Enemy>;
-	var rank:Int = 8;
+	var rank:Int = 4;
 
 	override public function create()
 	{
@@ -63,15 +63,15 @@ class PlayState extends FlxState
 			addEnemy(-26, 200, 3 * i, MediumPlane, enemyBullets);
 		}
 
-		addEnemy(80, -50, 2.5, SmallPlane);
+		addEnemy(80, -50, 2.5, RedPlane, enemyBullets);
 		addEnemy(FlxG.width - 80, -50, 2.5, SmallPlane);
 
 		addEnemy(30, -50, 4, SmallPlane);
-		addEnemy(FlxG.width / 2, -50, 4, SmallPlane);
+		addEnemy(FlxG.width / 2, -50, 4, RedPlane, enemyBullets);
 		addEnemy(FlxG.width - 30, -50, 5, SmallPlane);
 
 		addEnemy(30, -50, 8, SmallPlane);
-		addEnemy(FlxG.width - 30, -50, 7, SmallPlane);
+		addEnemy(FlxG.width - 30, -50, 7, RedPlane, enemyBullets);
 		addEnemy(FlxG.width / 2, -50, 8, SmallPlane);
 
 		addEnemy(80, -50, 9, SmallPlane);

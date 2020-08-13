@@ -23,7 +23,7 @@ class MediumPlane extends Enemy
 		animation.add("NORMAL", [0], 10, true);
 		animation.add("HIT", [1], 10, false);
 		animation.play("NORMAL");
-		health = 2 * rank;
+		health = Std.int(1.5 * rank);
 		animation.finishCallback = onAnimationFinished;
 	}
 

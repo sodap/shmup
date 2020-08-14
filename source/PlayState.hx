@@ -1,5 +1,6 @@
 package;
 
+import Explosion;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
@@ -8,6 +9,7 @@ import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.group.FlxGroup;
 import flixel.math.FlxRandom;
 import flixel.util.FlxTimer;
+import js.html.AbortController;
 
 class PlayState extends FlxState
 {
@@ -44,53 +46,55 @@ class PlayState extends FlxState
 
 		var _timer = new FlxTimer();
 		smallPlaneWave(_timer);
-		_timer.start(15, smallPlaneWave, 4);
+		_timer.start(30, smallPlaneWave, 0);
 	}
 
 	function smallPlaneWave(timer:FlxTimer)
 	{
 		addEnemy(FlxG.width - 60, FlxG.height + 10, 2.5, BigPlane, enemyBullets);
+		/*
+			addEnemy(FlxG.width - 60, FlxG.height + 10, 2.5, BigPlane, enemyBullets);
 
-		for (i in 0...2)
-		{
-			addEnemy(30 + 20 * i, -50, 2, SmallPlane);
-			addEnemy(FlxG.width / 2 - 10 + 20 * i, -50, 2, SmallPlane);
-			addEnemy(FlxG.width - 30 - 20 * i, -50, 2, SmallPlane);
-		}
+			for (i in 0...2)
+			{
+				addEnemy(30 + 20 * i, -50, 2, SmallPlane);
+				addEnemy(FlxG.width / 2 - 10 + 20 * i, -50, 2, SmallPlane);
+				addEnemy(FlxG.width - 30 - 20 * i, -50, 2, SmallPlane);
+			}
 
-		for (i in 1...5)
-		{
-			addEnemy(FlxG.width + 5, 220, 3 * i, MediumPlane, enemyBullets);
-			addEnemy(FlxG.width + 5, 180, 3 * i, MediumPlane, enemyBullets);
-			addEnemy(FlxG.width + 5, 140, 3 * i, MediumPlane, enemyBullets);
-			addEnemy(-26, 200, 3 * i, MediumPlane, enemyBullets);
-		}
+			for (i in 1...5)
+			{
+				addEnemy(FlxG.width + 5, 220, 3 * i, MediumPlane, enemyBullets);
+				addEnemy(FlxG.width + 5, 180, 3 * i, MediumPlane, enemyBullets);
+				addEnemy(FlxG.width + 5, 140, 3 * i, MediumPlane, enemyBullets);
+				addEnemy(-26, 200, 3 * i, MediumPlane, enemyBullets);
+			}
 
-		addEnemy(80, -50, 2.5, RedPlane, enemyBullets);
-		addEnemy(FlxG.width - 80, -50, 2.5, SmallPlane);
+			addEnemy(80, -50, 2.5, RedPlane, enemyBullets);
+			addEnemy(FlxG.width - 80, -50, 2.5, SmallPlane);
 
-		addEnemy(30, -50, 4, SmallPlane);
-		addEnemy(FlxG.width / 2, -50, 4, RedPlane, enemyBullets);
-		addEnemy(FlxG.width - 30, -50, 5, SmallPlane);
+			addEnemy(30, -50, 4, SmallPlane);
+			addEnemy(FlxG.width / 2, -50, 4, RedPlane, enemyBullets);
+			addEnemy(FlxG.width - 30, -50, 5, SmallPlane);
 
-		addEnemy(30, -50, 8, SmallPlane);
-		addEnemy(FlxG.width - 30, -50, 7, RedPlane, enemyBullets);
-		addEnemy(FlxG.width / 2, -50, 8, SmallPlane);
+			addEnemy(30, -50, 8, SmallPlane);
+			addEnemy(FlxG.width - 30, -50, 7, RedPlane, enemyBullets);
+			addEnemy(FlxG.width / 2, -50, 8, SmallPlane);
 
-		addEnemy(80, -50, 9, SmallPlane);
-		addEnemy(FlxG.width - 80, -50, 9, SmallPlane);
+			addEnemy(80, -50, 9, SmallPlane);
+			addEnemy(FlxG.width - 80, -50, 9, SmallPlane);
 
-		addEnemy(30, -50, 10.5, SmallPlane);
-		addEnemy(FlxG.width / 2, -50, 10.5, SmallPlane);
-		addEnemy(FlxG.width - 30, -50, 10.5, SmallPlane);
+			addEnemy(30, -50, 10.5, SmallPlane);
+			addEnemy(FlxG.width / 2, -50, 10.5, SmallPlane);
+			addEnemy(FlxG.width - 30, -50, 10.5, SmallPlane);
 
-		addEnemy(30, -50, 14, SmallPlane);
-		addEnemy(FlxG.width / 2, -50, 12, SmallPlane);
-		addEnemy(FlxG.width - 30, -50, 12, SmallPlane);
+			addEnemy(30, -50, 14, SmallPlane);
+			addEnemy(FlxG.width / 2, -50, 12, SmallPlane);
+			addEnemy(FlxG.width - 30, -50, 12, SmallPlane);
 
-		addEnemy(30, -50, 13.5, SmallPlane);
-		addEnemy(FlxG.width - 30, -50, 14, SmallPlane);
-		addEnemy(FlxG.width / 2, -50, 14.5, SmallPlane);
+			addEnemy(30, -50, 13.5, SmallPlane);
+			addEnemy(FlxG.width - 30, -50, 14, SmallPlane);
+			addEnemy(FlxG.width / 2, -50, 14.5, SmallPlane); */
 	}
 
 	function addEnemy(x:Float, y:Float, time:Float, ObjectClass:Class<Enemy>, bulletGroup:FlxTypedGroup<EnemyBullet> = null)
@@ -105,6 +109,9 @@ class PlayState extends FlxState
 		FlxG.overlap(heroBullets, enemies, destroyEnemy);
 		FlxG.overlap(enemyBullets, hero, killHero);
 		FlxG.overlap(enemies, hero, killHero);
+
+		if (FlxG.keys.anyJustPressed([ENTER]))
+			FlxG.switchState(new PlayState());
 	}
 
 	function killHero(enemy:Enemy, hero:Hero)
@@ -136,13 +143,21 @@ class PlayState extends FlxState
 			var _ny = enemy.getGraphicMidpoint().y - _newExplosion.height / 2;
 			_newExplosion.start(_nx, _ny);
 			explosions.add(_newExplosion);
-			for (i in 0...0 + 2 * Std.int(enemy.width / 24))
+			var _sectors = Std.int(enemy.width / 24);
+			var _sector_width = enemy.width / _sectors;
+			var _sector_height = enemy.height / _sectors;
+			for (i in 0..._sectors)
 			{
-				var _newExplosion = explosions.recycle(Explosion);
-				var _nx = enemy.getGraphicMidpoint().x - FlxG.random.float(0, enemy.width / 2) - _newExplosion.width / 2;
-				var _ny = enemy.getGraphicMidpoint().y - FlxG.random.float(0, enemy.height / 2) - _newExplosion.height / 2;
-				_newExplosion.start(_nx, _ny);
-				explosions.add(_newExplosion);
+				var _nx:Float = 0;
+				var _ny:Float = 0;
+				for (j in 0..._sectors)
+				{
+					_nx = enemy.x + FlxG.random.float(0 + _sector_width * i, _sector_width * (i + 1)) - _newExplosion.width / 3;
+					_ny = enemy.y + FlxG.random.float(0 + _sector_height * j, _sector_height * (j + 1)) - _newExplosion.height / 3;
+					var _newExplosion = explosions.recycle(Explosion);
+					_newExplosion.start(_nx, _ny);
+					explosions.add(_newExplosion);
+				}
 			}
 		}
 		bullet.kill();

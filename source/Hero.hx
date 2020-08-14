@@ -95,7 +95,6 @@ class Hero extends FlxSprite
 
 	function shootBullets(power:Int = 1)
 	{
-		trace('power: $powerLevel');
 		for (i in 0...(power % 2))
 		{
 			var _newBullet = bullets.recycle(HeroBullet);

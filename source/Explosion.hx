@@ -11,7 +11,7 @@ class Explosion extends FlxSprite
 	{
 		super(x, y);
 		loadGraphic(AssetPaths.explosion_fx__png, true, 32, 32);
-		animation.add("EXPLODE", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9], 12, false);
+		animation.add("EXPLODE", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9], 15, false);
 		start(x, y);
 	}
 
@@ -20,9 +20,9 @@ class Explosion extends FlxSprite
 		kill();
 	}
 
-	public function start(x:Float = 0, y:Float = 0)
+	public function start(_x:Float = 0, _y:Float = 0)
 	{
-		reset(x, y);
+		reset(_x, _y);
 		animation.play("EXPLODE", true);
 	}
 

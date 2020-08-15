@@ -19,6 +19,7 @@ class RedPlane extends Enemy
 	public function new(x:Float = 0, y:Float = 0, timeToSpawn:Float, rank, bullets)
 	{
 		super(x, y, timeToSpawn, rank, bullets);
+		this.scoreValue = 50;
 		SPEED = 140 + 5 * rank;
 		loadGraphic(AssetPaths.red_plane__png, false, 11, 15);
 	}

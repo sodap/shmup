@@ -16,6 +16,7 @@ class SmallPlane extends Enemy
 	public function new(x:Float = 0, y:Float = 0, timeToSpawn:Float, rank)
 	{
 		super(x, y, timeToSpawn, rank);
+		this.scoreValue = 10;
 		SPEED = 140 + 5 * rank;
 		loadGraphic(AssetPaths.small_plane__png, false, 11, 15);
 	}

@@ -21,8 +21,8 @@
 - ~~Add Enemy Bullet Class~~
 - ~~Add Red Small Plane Class~~
 - ~~Add Big Plane Class~~
-- Add Score System
-- Add HUD
+- ~~Add Score System~~
+- ~~Add HUD~~
 - Add Bombs
 - Add Powerups
 - Add rank system

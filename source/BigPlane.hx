@@ -19,6 +19,7 @@ class BigPlane extends Enemy
 	public function new(x:Float = 0, y:Float = 0, timeToSpawn:Float, rank, bullets = null)
 	{
 		super(x, y, timeToSpawn, rank, bullets);
+		this.scoreValue = 1500;
 		SPEED = 40 + 7 * rank;
 		loadGraphic(AssetPaths.big_plane__png, true, 53, 50);
 		animation.add("NORMAL", [0], 10, true);

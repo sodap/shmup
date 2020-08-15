@@ -18,6 +18,7 @@ class MediumPlane extends Enemy
 	public function new(x:Float = 0, y:Float = 0, timeToSpawn:Float, rank, bullets = null)
 	{
 		super(x, y, timeToSpawn, rank, bullets);
+		this.scoreValue = 100;
 		SPEED = 80 + 7 * rank;
 		loadGraphic(AssetPaths.medium_plane__png, true, 21, 21);
 		animation.add("NORMAL", [0], 10, true);

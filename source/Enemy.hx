@@ -12,6 +12,7 @@ import lime.utils.Assets;
 class Enemy extends FlxSprite
 {
 	public var SPEED = 40;
+	public var scoreValue = 10;
 
 	var rank:Int = 1;
 	var bullets:FlxGroup; // TypedGroup<EnemyBullet>;

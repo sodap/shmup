@@ -165,6 +165,13 @@ class PlayState extends FlxState
 		bombsHud.y = FlxG.height - 4 - bombsHud.height;
 		updateBombsHud(hero.bombs);
 		add(bombsHud);
+
+		livesHud = new FlxTiledSprite(AssetPaths.livesHud__png, 0, 14, true, false);
+		livesHud.scrollFactor.set(0, 0);
+		livesHud.x = 4;
+		livesHud.y = FlxG.height - 4 - bombsHud.height;
+		updateLivesHud(lives);
+		add(livesHud);
 	}
 
 	public function updateBombsHud(_bombs:Int)
@@ -172,6 +179,12 @@ class PlayState extends FlxState
 		bombsHud.width = 10 * _bombs;
 		bombsHud.x = FlxG.width - 4 - bombsHud.width;
 		bombsHud.visible = _bombs > 0;
+	}
+
+	public function updateLivesHud(_lives:Int)
+	{
+		livesHud.width = 12 * _lives;
+		livesHud.visible = _lives > 0;
 	}
 
 	function updateScoreText(_score:Int)
@@ -287,6 +300,7 @@ class PlayState extends FlxState
 				_timer.start(1, spawnHero);
 			}
 			updateBombsHud(0);
+			updateLivesHud(lives);
 		}
 	}
 

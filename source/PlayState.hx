@@ -5,6 +5,7 @@ import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
 import flixel.addons.display.FlxBackdrop;
+import flixel.addons.display.FlxTiledSprite;
 import flixel.graphics.frames.FlxBitmapFont;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.group.FlxGroup;
@@ -38,6 +39,8 @@ class PlayState extends FlxState
 	var scoreText:FlxBitmapText;
 	var rankText:FlxBitmapText;
 	var loopText:FlxBitmapText;
+	var bombsHud:FlxTiledSprite;
+	var livesHud:FlxTiledSprite;
 
 	override public function create()
 	{
@@ -155,6 +158,20 @@ class PlayState extends FlxState
 		loopText.y = loopTitle.y + lineHeight;
 		loopText.scrollFactor.set(0, 0);
 		add(loopText);
+
+		bombsHud = new FlxTiledSprite(AssetPaths.bombHud__png, 0, 14, true, false);
+		bombsHud.scrollFactor.set(0, 0);
+		bombsHud.x = FlxG.width - 4 - bombsHud.width;
+		bombsHud.y = FlxG.height - 4 - bombsHud.height;
+		updateBombsHud(hero.bombs);
+		add(bombsHud);
+	}
+
+	public function updateBombsHud(_bombs:Int)
+	{
+		bombsHud.width = 10 * _bombs;
+		bombsHud.x = FlxG.width - 4 - bombsHud.width;
+		bombsHud.visible = _bombs > 0;
 	}
 
 	function updateScoreText(_score:Int)
@@ -251,6 +268,7 @@ class PlayState extends FlxState
 	{
 		bomb.kill();
 		hero.bombs++;
+		updateBombsHud(hero.bombs);
 	}
 
 	function killHero(enemy:Enemy, hero:Hero)
@@ -263,18 +281,19 @@ class PlayState extends FlxState
 			remove(hero);
 			lives--;
 			hero.kill();
-
 			if (lives > 0)
 			{
 				var _timer = new FlxTimer();
 				_timer.start(1, spawnHero);
 			}
+			updateBombsHud(0);
 		}
 	}
 
 	function spawnHero(timer:FlxTimer)
 	{
 		hero = new Hero(112, 200, heroBullets);
+		updateBombsHud(hero.bombs);
 		add(hero);
 	}
 

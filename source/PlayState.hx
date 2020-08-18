@@ -21,11 +21,13 @@ class PlayState extends FlxState
 	var enemyBullets:FlxTypedGroup<EnemyBullet>;
 	var explosions:FlxTypedGroup<Explosion>;
 	var smallPlanes:FlxTypedGroup<SmallPlane>;
+	var bombs:FlxTypedGroup<BombPickup>;
 	var enemies:FlxTypedGroup<Enemy>;
 
 	var rank:Int = 1;
 	var lives:Int = 3;
 	var score:Int = 0;
+	var bombAmmo:Int = 3;
 
 	var yellowFont:FlxBitmapFont;
 	var silverFont:FlxBitmapFont;
@@ -56,12 +58,18 @@ class PlayState extends FlxState
 		enemyBullets = new FlxTypedGroup();
 		add(enemyBullets);
 
+		bombs = new FlxTypedGroup();
+		add(bombs);
+
 		explosions = new FlxTypedGroup();
 		add(explosions);
 
 		var _timer = new FlxTimer();
 		smallPlaneWave(_timer);
 		_timer.start(30, smallPlaneWave, 0);
+
+		var _timer = new FlxTimer();
+		_timer.start(5, spawnBomb, 0);
 
 		silverFont = FlxBitmapFont.fromAngelCode("assets/fonts/tacticalbitGrid_0.png", "assets/fonts/tacticalbitGrid.fnt");
 		goldFont = FlxBitmapFont.fromAngelCode("assets/fonts/tacticalbitGridGold_0.png", "assets/fonts/tacticalbitGrid.fnt");
@@ -167,6 +175,12 @@ class PlayState extends FlxState
 		scoreText.font = scoreFont;
 	}
 
+	function spawnBomb(timer:FlxTimer)
+	{
+		var newBomb = new BombPickup(FlxG.width / 2, FlxG.height / 2);
+		bombs.add(newBomb);
+	}
+
 	function smallPlaneWave(timer:FlxTimer)
 	{
 		addEnemy(FlxG.width - 60, FlxG.height + 10, 2.5, BigPlane, enemyBullets);
@@ -227,9 +241,16 @@ class PlayState extends FlxState
 		FlxG.overlap(heroBullets, enemies, destroyEnemy);
 		FlxG.overlap(enemyBullets, hero, killHero);
 		FlxG.overlap(enemies, hero, killHero);
+		FlxG.overlap(hero, bombs, getBomb);
 
 		if (FlxG.keys.anyJustPressed([ENTER]))
 			FlxG.switchState(new PlayState());
+	}
+
+	function getBomb(hero:Hero, bomb:BombPickup)
+	{
+		bomb.kill();
+		hero.bombs++;
 	}
 
 	function killHero(enemy:Enemy, hero:Hero)
@@ -240,9 +261,14 @@ class PlayState extends FlxState
 			_newExplosion.start(hero.x - _newExplosion.width / 2, hero.y - _newExplosion.height / 2);
 			explosions.add(_newExplosion);
 			remove(hero);
+			lives--;
 			hero.kill();
-			var _timer = new FlxTimer();
-			_timer.start(1, spawnHero);
+
+			if (lives > 0)
+			{
+				var _timer = new FlxTimer();
+				_timer.start(1, spawnHero);
+			}
 		}
 	}
 
@@ -279,7 +305,6 @@ class PlayState extends FlxState
 			}
 			score += enemy.scoreValue;
 			updateScoreText(score);
-			trace(score);
 		}
 		bullet.kill();
 	}

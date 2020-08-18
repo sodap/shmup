@@ -18,6 +18,9 @@ class Hero extends FlxSprite
 	var FIRE_RATE:Float = 0.15;
 	var SPEED:Float = 150;
 	var powerLevel:Int = 2;
+
+	public var bombs:Int = 2;
+
 	final maxPower:Int = 8;
 
 	public var invincible:Bool = true;

@@ -23,6 +23,6 @@
 - ~~Add Big Plane Class~~
 - ~~Add Score System~~
 - ~~Add HUD~~
-- Add Bombs
+- ~~Add Bombs~~
 - Add Powerups
 - Add rank system

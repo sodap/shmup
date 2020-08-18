@@ -21,6 +21,7 @@ class PlayState extends FlxState
 	var heroBullets:FlxTypedGroup<HeroBullet>;
 	var enemyBullets:FlxTypedGroup<EnemyBullet>;
 	var explosions:FlxTypedGroup<Explosion>;
+	var bombEffects:FlxTypedGroup<BombFx>;
 	var smallPlanes:FlxTypedGroup<SmallPlane>;
 	var bombs:FlxTypedGroup<BombPickup>;
 	var enemies:FlxTypedGroup<Enemy>;
@@ -52,7 +53,7 @@ class PlayState extends FlxState
 		heroBullets = new FlxTypedGroup();
 		add(heroBullets);
 
-		hero = new Hero(112, 200, heroBullets);
+		hero = new Hero(112, 200, heroBullets, this);
 		add(hero);
 
 		enemies = new FlxTypedGroup();
@@ -63,6 +64,9 @@ class PlayState extends FlxState
 
 		bombs = new FlxTypedGroup();
 		add(bombs);
+
+		bombEffects = new FlxTypedGroup();
+		add(bombEffects);
 
 		explosions = new FlxTypedGroup();
 		add(explosions);
@@ -284,6 +288,27 @@ class PlayState extends FlxState
 		updateBombsHud(hero.bombs);
 	}
 
+	public function useBomb()
+	{
+		if (hero.bombs > 0)
+		{
+			var _newBombFX = bombEffects.recycle(BombFx);
+			_newBombFX.start(hero.x - _newBombFX.width / 2, hero.y);
+			bombEffects.add(_newBombFX);
+			hero.bombs--;
+			updateBombsHud(hero.bombs);
+		}
+
+		for (_bullet in enemyBullets)
+		{
+			_bullet.kill();
+		}
+		for (_enemy in enemies)
+		{
+			destroyEnemy(null, _enemy); // .kill();
+		}
+	}
+
 	function killHero(enemy:Enemy, hero:Hero)
 	{
 		if (!hero.invincible)
@@ -306,14 +331,16 @@ class PlayState extends FlxState
 
 	function spawnHero(timer:FlxTimer)
 	{
-		hero = new Hero(112, 200, heroBullets);
+		hero = new Hero(112, 200, heroBullets, this);
 		updateBombsHud(hero.bombs);
 		add(hero);
 	}
 
-	function destroyEnemy(bullet:HeroBullet, enemy:Enemy)
+	function destroyEnemy(bullet:HeroBullet = null, enemy:Enemy)
 	{
-		if (enemy.getDamage()) // if enemy is killed
+		if (!enemy.alive)
+			return;
+		if (enemy.getDamage(bullet == null))
 		{
 			var _newExplosion = explosions.recycle(Explosion);
 			var _nx = enemy.getGraphicMidpoint().x - _newExplosion.width / 2;
@@ -339,6 +366,7 @@ class PlayState extends FlxState
 			score += enemy.scoreValue;
 			updateScoreText(score);
 		}
-		bullet.kill();
+		if (bullet != null)
+			bullet.kill();
 	}
 }

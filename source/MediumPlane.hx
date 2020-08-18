@@ -62,9 +62,9 @@ class MediumPlane extends Enemy
 		}
 	}
 
-	override public function getDamage():Bool
+	override public function getDamage(isBombDamage:Bool = false):Bool
 	{
-		health--;
+		super.getDamage(isBombDamage);
 		animation.play("HIT");
 		if (health <= 0)
 		{

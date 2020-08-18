@@ -18,6 +18,7 @@ class Hero extends FlxSprite
 	var FIRE_RATE:Float = 0.15;
 	var SPEED:Float = 150;
 	var powerLevel:Int = 2;
+	var gameState:PlayState;
 
 	public var bombs:Int = 2;
 
@@ -27,9 +28,10 @@ class Hero extends FlxSprite
 
 	var bullets:FlxTypedGroup<HeroBullet>;
 
-	public function new(x:Float = 0, y:Float = 0, bullets)
+	public function new(x:Float = 0, y:Float = 0, bullets, gameState:PlayState)
 	{
 		super(x, y);
+		this.gameState = gameState;
 		this.bullets = bullets;
 		loadGraphic(AssetPaths.hero_aircraft__png, true, 29, 29);
 		width = 4;
@@ -130,6 +132,8 @@ class Hero extends FlxSprite
 		var _move = handleMovement(up, down, left, right);
 		if (FlxG.keys.anyPressed([CONTROL]) && !autoShootTimer.active)
 			shootBullets(powerLevel);
+		if (FlxG.keys.anyJustPressed([SHIFT]) && bombs > 0)
+			gameState.useBomb();
 
 		// power level controls (FOR TESTING)
 		powerLevel = Std.int(FlxMath.bound(powerLevel + boolToInt(FlxG.keys.anyJustPressed([PAGEDOWN])) - boolToInt(FlxG.keys.anyJustPressed([PAGEUP])), 1,

@@ -22,13 +22,17 @@ class PlayState extends FlxState
 	var explosions:FlxTypedGroup<Explosion>;
 	var smallPlanes:FlxTypedGroup<SmallPlane>;
 	var enemies:FlxTypedGroup<Enemy>;
+
 	var rank:Int = 1;
 	var lives:Int = 3;
 	var score:Int = 0;
+
 	var yellowFont:FlxBitmapFont;
 	var silverFont:FlxBitmapFont;
 	var goldFont:FlxBitmapFont;
 	var scoreFont:FlxBitmapFont;
+	var highlightScoreFont:FlxBitmapFont;
+
 	var scoreText:FlxBitmapText;
 	var rankText:FlxBitmapText;
 	var loopText:FlxBitmapText;
@@ -37,7 +41,7 @@ class PlayState extends FlxState
 	{
 		super.create();
 		background = new FlxBackdrop("assets/images/background.png", 0, 0, true, true, 0, 0);
-		background.velocity.set(0, 48);
+		background.velocity.set(0, 24 + 4 * rank);
 		add(background);
 
 		heroBullets = new FlxTypedGroup();
@@ -60,9 +64,10 @@ class PlayState extends FlxState
 		_timer.start(30, smallPlaneWave, 0);
 
 		silverFont = FlxBitmapFont.fromAngelCode("assets/fonts/tacticalbitGrid_0.png", "assets/fonts/tacticalbitGrid.fnt");
-		goldFont = FlxBitmapFont.fromAngelCode("assets/fonts/tacticalbitGridGold_0.png", "assets/fonts/tacticalbitGridGold.fnt");
-		yellowFont = FlxBitmapFont.fromAngelCode("assets/fonts/tacticalbitGridYellow_0.png", "assets/fonts/tacticalbitGridYellow.fnt");
+		goldFont = FlxBitmapFont.fromAngelCode("assets/fonts/tacticalbitGridGold_0.png", "assets/fonts/tacticalbitGrid.fnt");
+		yellowFont = FlxBitmapFont.fromAngelCode("assets/fonts/tacticalbitGridYellow_0.png", "assets/fonts/tacticalbitGrid.fnt");
 		scoreFont = FlxBitmapFont.fromAngelCode("assets/fonts/tacticalbitScores_0.png", "assets/fonts/tacticalbitScores.fnt");
+		highlightScoreFont = FlxBitmapFont.fromAngelCode("assets/fonts/tacticalbitScoresHighlight_0.png", "assets/fonts/tacticalbitScores.fnt");
 
 		createHud(4, 4);
 	}
@@ -147,6 +152,19 @@ class PlayState extends FlxState
 	function updateScoreText(_score:Int)
 	{
 		scoreText.text = StringTools.lpad('$_score', "0", 8);
+		highlightScore(scoreText);
+	}
+
+	function highlightScore(score:FlxBitmapText)
+	{
+		scoreText.font = highlightScoreFont;
+		var _timer = new FlxTimer();
+		_timer.start(0.05, restoreScoreFont, 1);
+	}
+
+	function restoreScoreFont(timer:FlxTimer)
+	{
+		scoreText.font = scoreFont;
 	}
 
 	function smallPlaneWave(timer:FlxTimer)

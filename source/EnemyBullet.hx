@@ -12,7 +12,7 @@ class EnemyBullet extends FlxSprite
 	public static var BULLET_HEIGHT = 7;
 	public static var BULLET_WIDTH = 7;
 
-	public var SPEED = 60;
+	public var SPEED = 40;
 
 	public function new(x:Float = 0, y:Float = 0, direction:Float = 90, speed = 60)
 	{

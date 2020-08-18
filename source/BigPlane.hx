@@ -20,7 +20,7 @@ class BigPlane extends Enemy
 	{
 		super(x, y, timeToSpawn, rank, bullets);
 		this.scoreValue = 1500;
-		SPEED = 40 + 7 * rank;
+		SPEED = Std.int(BASESPEED * 0.5) + 7 * rank;
 		loadGraphic(AssetPaths.big_plane__png, true, 53, 50);
 		animation.add("NORMAL", [0], 10, true);
 		animation.add("HIT", [1], 20, false);

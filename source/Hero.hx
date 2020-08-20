@@ -17,7 +17,9 @@ class Hero extends FlxSprite
 	var autoShootTimer:FlxTimer;
 	var FIRE_RATE:Float = 0.15;
 	var SPEED:Float = 150;
-	var powerLevel:Int = 2;
+
+	public var powerLevel:Int = 2;
+
 	var gameState:PlayState;
 
 	public var bombs:Int = 2;
@@ -136,10 +138,15 @@ class Hero extends FlxSprite
 			gameState.useBomb();
 
 		// power level controls (FOR TESTING)
-		powerLevel = Std.int(FlxMath.bound(powerLevel + boolToInt(FlxG.keys.anyJustPressed([PAGEDOWN])) - boolToInt(FlxG.keys.anyJustPressed([PAGEUP])), 1,
-			maxPower));
+		// powerLevel = Std.int(FlxMath.bound(powerLevel + boolToInt(FlxG.keys.anyJustPressed([PAGEDOWN])) - boolToInt(FlxG.keys.anyJustPressed([PAGEUP])), 1,maxPower));
 
 		x = FlxMath.bound(x, 0, FlxG.width - 4);
 		y = FlxMath.bound(y, 0, FlxG.height - 20);
+	}
+
+	public function addPower()
+	{
+		powerLevel = Std.int(FlxMath.bound(powerLevel + 1, 2, maxPower));
+		gameState.increaseRank();
 	}
 }

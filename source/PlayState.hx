@@ -9,10 +9,36 @@ import flixel.addons.display.FlxTiledSprite;
 import flixel.graphics.frames.FlxBitmapFont;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.group.FlxGroup;
+import flixel.math.FlxMath;
 import flixel.math.FlxRandom;
 import flixel.text.FlxBitmapText;
 import flixel.text.FlxText;
 import flixel.util.FlxTimer;
+
+class HudText extends FlxBitmapText
+{
+	var highlightFont:FlxBitmapFont;
+	var normalFont:FlxBitmapFont;
+
+	override public function new(?font:FlxBitmapFont, highlightFont:FlxBitmapFont)
+	{
+		super(font);
+		this.highlightFont = highlightFont;
+		this.normalFont = font;
+	}
+
+	public function highlight()
+	{
+		this.font = highlightFont;
+		var _timer = new FlxTimer();
+		_timer.start(0.05, restoreFont, 1);
+	}
+
+	public function restoreFont(timer:FlxTimer)
+	{
+		this.font = normalFont;
+	}
+}
 
 class PlayState extends FlxState
 {
@@ -24,12 +50,15 @@ class PlayState extends FlxState
 	var bombEffects:FlxTypedGroup<BombFx>;
 	var smallPlanes:FlxTypedGroup<SmallPlane>;
 	var bombs:FlxTypedGroup<BombPickup>;
+	var powerups:FlxTypedGroup<Powerup>;
 	var enemies:FlxTypedGroup<Enemy>;
 
-	var rank:Int = 1;
-	var lives:Int = 3;
-	var score:Int = 0;
-	var bombAmmo:Int = 3;
+	public var rank:Int = 1;
+	public var maxRank:Int = 9;
+
+	public var lives:Int = 3;
+	public var score:Int = 0;
+	public var bombAmmo:Int = 3;
 
 	var yellowFont:FlxBitmapFont;
 	var silverFont:FlxBitmapFont;
@@ -37,9 +66,9 @@ class PlayState extends FlxState
 	var scoreFont:FlxBitmapFont;
 	var highlightScoreFont:FlxBitmapFont;
 
-	var scoreText:FlxBitmapText;
-	var rankText:FlxBitmapText;
-	var loopText:FlxBitmapText;
+	var scoreText:HudText;
+	var rankText:HudText;
+	var loopText:HudText;
 	var bombsHud:FlxTiledSprite;
 	var livesHud:FlxTiledSprite;
 
@@ -65,6 +94,9 @@ class PlayState extends FlxState
 		bombs = new FlxTypedGroup();
 		add(bombs);
 
+		powerups = new FlxTypedGroup();
+		add(powerups);
+
 		bombEffects = new FlxTypedGroup();
 		add(bombEffects);
 
@@ -77,6 +109,9 @@ class PlayState extends FlxState
 
 		var _timer = new FlxTimer();
 		_timer.start(5, spawnBomb, 0);
+
+		var _timer2 = new FlxTimer();
+		_timer2.start(8, spawnPowerup, 0);
 
 		silverFont = FlxBitmapFont.fromAngelCode("assets/fonts/tacticalbitGrid_0.png", "assets/fonts/tacticalbitGrid.fnt");
 		goldFont = FlxBitmapFont.fromAngelCode("assets/fonts/tacticalbitGridGold_0.png", "assets/fonts/tacticalbitGrid.fnt");
@@ -104,7 +139,7 @@ class PlayState extends FlxState
 		rankTitle.scrollFactor.set(0, 0);
 		add(rankTitle);
 
-		rankText = new FlxBitmapText(scoreFont);
+		rankText = new HudText(scoreFont, highlightScoreFont);
 		rankText.text = "[1]";
 		rankText.alignment = FlxTextAlign.LEFT;
 		rankText.letterSpacing = 1;
@@ -127,7 +162,7 @@ class PlayState extends FlxState
 		scoreTitle.scrollFactor.set(0, 0);
 		add(scoreTitle);
 
-		scoreText = new FlxBitmapText(scoreFont);
+		scoreText = new HudText(scoreFont, highlightScoreFont);
 		scoreText.text = "00000000";
 		scoreText.alignment = FlxTextAlign.CENTER;
 		scoreText.letterSpacing = 1;
@@ -152,7 +187,7 @@ class PlayState extends FlxState
 		loopTitle.scrollFactor.set(0, 0);
 		add(loopTitle);
 
-		loopText = new FlxBitmapText(scoreFont);
+		loopText = new HudText(scoreFont, highlightScoreFont);
 		loopText.text = "[0]";
 		loopText.alignment = FlxTextAlign.RIGHT;
 		loopText.letterSpacing = 1;
@@ -191,28 +226,34 @@ class PlayState extends FlxState
 		livesHud.visible = _lives > 0;
 	}
 
+	public function increaseRank()
+	{
+		rank = Std.int(FlxMath.bound(rank + 1, 1, maxRank));
+		updateRankHud(rank);
+	}
+
+	public function updateRankHud(rank:Int = 1)
+	{
+		rankText.text = '[ $rank ]';
+		rankText.highlight();
+	}
+
 	function updateScoreText(_score:Int)
 	{
 		scoreText.text = StringTools.lpad('$_score', "0", 8);
-		highlightScore(scoreText);
-	}
-
-	function highlightScore(score:FlxBitmapText)
-	{
-		scoreText.font = highlightScoreFont;
-		var _timer = new FlxTimer();
-		_timer.start(0.05, restoreScoreFont, 1);
-	}
-
-	function restoreScoreFont(timer:FlxTimer)
-	{
-		scoreText.font = scoreFont;
+		scoreText.highlight();
 	}
 
 	function spawnBomb(timer:FlxTimer)
 	{
 		var newBomb = new BombPickup(FlxG.width / 2, FlxG.height / 2);
 		bombs.add(newBomb);
+	}
+
+	function spawnPowerup(timer:FlxTimer)
+	{
+		var newPowerup = new Powerup(FlxG.width / 2, FlxG.height / 2);
+		powerups.add(newPowerup);
 	}
 
 	function smallPlaneWave(timer:FlxTimer)
@@ -276,6 +317,7 @@ class PlayState extends FlxState
 		FlxG.overlap(enemyBullets, hero, killHero);
 		FlxG.overlap(enemies, hero, killHero);
 		FlxG.overlap(hero, bombs, getBomb);
+		FlxG.overlap(hero, powerups, getPowerup);
 
 		if (FlxG.keys.anyJustPressed([ENTER]))
 			FlxG.switchState(new PlayState());
@@ -286,6 +328,12 @@ class PlayState extends FlxState
 		bomb.kill();
 		hero.bombs++;
 		updateBombsHud(hero.bombs);
+	}
+
+	function getPowerup(hero:Hero, powerup:Powerup)
+	{
+		powerup.kill();
+		hero.addPower();
 	}
 
 	public function useBomb()
@@ -326,6 +374,8 @@ class PlayState extends FlxState
 			}
 			updateBombsHud(0);
 			updateLivesHud(lives);
+			rank = Std.int(FlxMath.bound(rank - 3, 1, maxRank));
+			updateRankHud(rank);
 		}
 	}
 
@@ -363,6 +413,9 @@ class PlayState extends FlxState
 					explosions.add(_newExplosion);
 				}
 			}
+			if (Std.int(score / 10000) != Std.int((score + enemy.scoreValue) / 10000))
+				increaseRank();
+
 			score += enemy.scoreValue;
 			updateScoreText(score);
 		}

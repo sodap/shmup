@@ -19,6 +19,9 @@ class Enemy extends FlxSprite
 	var bullets:FlxGroup; // TypedGroup<EnemyBullet>;
 	var started = false;
 
+	public var spawnBomb = false;
+	public var spawnPowerup = false;
+
 	public function new(x:Float = 0, y:Float = 0, timeToSpawn:Float, rank:Int = 1, bullets = null)
 	{
 		super(x, y);

@@ -107,11 +107,12 @@ class PlayState extends FlxState
 		smallPlaneWave(_timer);
 		_timer.start(30, smallPlaneWave, 0);
 
-		var _timer = new FlxTimer();
-		_timer.start(5, spawnBomb, 0);
+		/*
+			var _timer = new FlxTimer();
+			_timer.start(5, spawnBomb, 0);
 
-		var _timer2 = new FlxTimer();
-		_timer2.start(8, spawnPowerup, 0);
+			var _timer2 = new FlxTimer();
+			_timer2.start(8, spawnPowerup, 0); */
 
 		silverFont = FlxBitmapFont.fromAngelCode("assets/fonts/tacticalbitGrid_0.png", "assets/fonts/tacticalbitGrid.fnt");
 		goldFont = FlxBitmapFont.fromAngelCode("assets/fonts/tacticalbitGridGold_0.png", "assets/fonts/tacticalbitGrid.fnt");
@@ -244,16 +245,22 @@ class PlayState extends FlxState
 		scoreText.highlight();
 	}
 
-	function spawnBomb(timer:FlxTimer)
+	function spawnBomb(x:Float, y:Float):BombPickup
 	{
-		var newBomb = new BombPickup(FlxG.width / 2, FlxG.height / 2);
+		var newBomb = new BombPickup(x, y);
 		bombs.add(newBomb);
+		newBomb.x = FlxMath.bound(x, 5, FlxG.width - 5 - newBomb.width);
+		newBomb.y = FlxMath.bound(y, 5, FlxG.height - 5 - newBomb.height);
+		return newBomb;
 	}
 
-	function spawnPowerup(timer:FlxTimer)
+	function spawnPowerup(x:Float, y:Float):Powerup
 	{
-		var newPowerup = new Powerup(FlxG.width / 2, FlxG.height / 2);
+		var newPowerup = new Powerup(x, y);
 		powerups.add(newPowerup);
+		newPowerup.x = FlxMath.bound(x, 5, FlxG.width - 5 - newPowerup.width);
+		newPowerup.y = FlxMath.bound(y, 5, FlxG.height - 5 - newPowerup.height);
+		return newPowerup;
 	}
 
 	function smallPlaneWave(timer:FlxTimer)
@@ -269,8 +276,8 @@ class PlayState extends FlxState
 
 		for (i in 1...5)
 		{
-			addEnemy(FlxG.width + 5, 220, 3 * i, MediumPlane, enemyBullets);
-			addEnemy(FlxG.width + 5, 180, 3 * i, MediumPlane, enemyBullets);
+			addEnemy(FlxG.width + 5, 220, 3 * i, MediumPlane, enemyBullets, false, true);
+			addEnemy(FlxG.width + 5, 180, 3 * i, MediumPlane, enemyBullets, true, false);
 			addEnemy(FlxG.width + 5, 140, 3 * i, MediumPlane, enemyBullets);
 			addEnemy(-26, 200, 3 * i, MediumPlane, enemyBullets);
 		}
@@ -279,34 +286,37 @@ class PlayState extends FlxState
 		addEnemy(FlxG.width - 80, -50, 2.5, SmallPlane);
 
 		addEnemy(30, -50, 4, SmallPlane);
-		addEnemy(FlxG.width / 2, -50, 4, RedPlane, enemyBullets);
+		addEnemy(FlxG.width / 2, -50, 4, RedPlane, enemyBullets, true, false);
 		addEnemy(FlxG.width - 30, -50, 5, SmallPlane);
 
 		addEnemy(30, -50, 8, SmallPlane);
-		addEnemy(FlxG.width - 30, -50, 7, RedPlane, enemyBullets);
+		addEnemy(FlxG.width - 30, -50, 7, RedPlane, enemyBullets, false, true);
 		addEnemy(FlxG.width / 2, -50, 8, SmallPlane);
 
 		addEnemy(80, -50, 9, SmallPlane);
-		addEnemy(FlxG.width - 80, -50, 9, SmallPlane);
+		addEnemy(FlxG.width - 80, -50, 9, SmallPlane, true);
 
 		addEnemy(30, -50, 10.5, SmallPlane);
-		addEnemy(FlxG.width / 2, -50, 10.5, SmallPlane);
+		addEnemy(FlxG.width / 2, -50, 10.5, SmallPlane, false, true);
 		addEnemy(FlxG.width - 30, -50, 10.5, SmallPlane);
 
 		addEnemy(30, -50, 14, SmallPlane);
-		addEnemy(FlxG.width / 2, -50, 12, SmallPlane);
+		addEnemy(FlxG.width / 2, -50, 12, SmallPlane, true);
 		addEnemy(FlxG.width - 30, -50, 12, SmallPlane);
 
 		addEnemy(30, -50, 13.5, SmallPlane);
 		addEnemy(FlxG.width - 30, -50, 14, SmallPlane);
 		addEnemy(FlxG.width / 2, -50, 14.5, SmallPlane);
 
-		addEnemy(FlxG.width - 60, FlxG.height + 10, 18.5, BigPlane, enemyBullets);
+		addEnemy(FlxG.width - 60, FlxG.height + 10, 18.5, BigPlane, enemyBullets, false, true);
 	}
 
-	function addEnemy(x:Float, y:Float, time:Float, ObjectClass:Class<Enemy>, bulletGroup:FlxTypedGroup<EnemyBullet> = null)
+	function addEnemy(x:Float, y:Float, time:Float, ObjectClass:Class<Enemy>, bulletGroup:FlxTypedGroup<EnemyBullet> = null, spawnBomb:Bool = false,
+			spawnPowerup:Bool = false)
 	{
 		var _newPlane = Type.createInstance(ObjectClass, [x, y, time, rank, bulletGroup]);
+		_newPlane.spawnPowerup = spawnPowerup;
+		_newPlane.spawnBomb = spawnBomb;
 		enemies.add(_newPlane);
 	}
 
@@ -318,6 +328,24 @@ class PlayState extends FlxState
 		FlxG.overlap(enemies, hero, killHero);
 		FlxG.overlap(hero, bombs, getBomb);
 		FlxG.overlap(hero, powerups, getPowerup);
+
+		for (bomb in bombs)
+		{
+			if (Math.abs(bomb.x - hero.x) < 16 && Math.abs(bomb.y - hero.y) < 16)
+			{
+				bomb.x = FlxMath.lerp(bomb.x, hero.x, 0.15);
+				bomb.y = FlxMath.lerp(bomb.y, hero.y, 0.15);
+			}
+		}
+
+		for (powerup in powerups)
+		{
+			if (Math.abs(powerup.x - hero.x) < 16 && Math.abs(powerup.y - hero.y) < 16)
+			{
+				powerup.x = FlxMath.lerp(powerup.x, hero.x, 0.15);
+				powerup.y = FlxMath.lerp(powerup.y, hero.y, 0.15);
+			}
+		}
 
 		if (FlxG.keys.anyJustPressed([ENTER]))
 			FlxG.switchState(new PlayState());
@@ -353,7 +381,7 @@ class PlayState extends FlxState
 		}
 		for (_enemy in enemies)
 		{
-			destroyEnemy(null, _enemy); // .kill();
+			destroyEnemy(null, _enemy);
 		}
 	}
 
@@ -392,6 +420,15 @@ class PlayState extends FlxState
 			return;
 		if (enemy.getDamage(bullet == null))
 		{
+			if (enemy.spawnBomb)
+			{
+				spawnBomb(enemy.x, enemy.y);
+			}
+			if (enemy.spawnPowerup)
+			{
+				spawnPowerup(enemy.x, enemy.y);
+			}
+
 			var _newExplosion = explosions.recycle(Explosion);
 			var _nx = enemy.getGraphicMidpoint().x - _newExplosion.width / 2;
 			var _ny = enemy.getGraphicMidpoint().y - _newExplosion.height / 2;

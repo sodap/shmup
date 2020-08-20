@@ -26,8 +26,8 @@
 - ~~Add Bombs~~
 - ~~Add Powerups~~
 - ~~Add rank system~~
-- Add Bomb and Powerup spawn logic
-- Make a Logo
+- ~~Add Bomb and Powerup spawn logic~~
+- ~~Make a Logo~~
 - Design a decent level
 - Loop system
 - Gameover screen

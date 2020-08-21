@@ -44,9 +44,12 @@ class RedPlane extends Enemy
 
 	function shoot()
 	{
-		var shotPos = getGraphicMidpoint();
-		var bullet1:EnemyBullet = new EnemyBullet(shotPos.x, shotPos.y, (velocity.x > 0 ? 105 : 75), SPEED);
-		bullets.add(bullet1);
+		if (alive)
+		{
+			var shotPos = getGraphicMidpoint();
+			var bullet1:EnemyBullet = new EnemyBullet(shotPos.x, shotPos.y, (velocity.x > 0 ? 105 : 75), SPEED);
+			bullets.add(bullet1);
+		}
 	}
 
 	function exitScreen(tween:FlxTween):Void
@@ -61,11 +64,16 @@ class RedPlane extends Enemy
 
 	override public function getDamage(isBombDamage:Bool = false):Bool
 	{
-		super.getDamage(isBombDamage);
-		if (health <= 0)
+		if (alive)
 		{
-			kill();
-			return true;
+			super.getDamage(isBombDamage);
+			if (health <= 0)
+			{
+				kill();
+				return true;
+			}
+			else
+				return false;
 		}
 		else
 			return false;

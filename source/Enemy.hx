@@ -47,8 +47,11 @@ class Enemy extends FlxSprite
 
 	public function getDamage(isBombDamage:Bool = false):Bool
 	{
-		var _dmg = isBombDamage ? 10 : 1;
-		health -= _dmg;
+		if (alive)
+		{
+			var _dmg = isBombDamage ? 10 : 1;
+			health -= _dmg;
+		}
 		return false;
 	}
 

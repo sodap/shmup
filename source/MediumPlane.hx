@@ -15,7 +15,7 @@ class MediumPlane extends Enemy
 {
 	var hasAmmo = true;
 
-	public function new(x:Float = 0, y:Float = 0, timeToSpawn:Float, rank, bullets = null)
+	public function new(x:Float = 0, y:Float = 0, timeToSpawn:Float, rank, bullets)
 	{
 		super(x, y, timeToSpawn, rank, bullets);
 		this.scoreValue = 100;
@@ -26,6 +26,7 @@ class MediumPlane extends Enemy
 		animation.play("NORMAL");
 		health = 5 + Std.int(1.5 * rank);
 		animation.finishCallback = onAnimationFinished;
+		hasAmmo = true;
 	}
 
 	function onAnimationFinished(_anim_name:String)
@@ -36,19 +37,28 @@ class MediumPlane extends Enemy
 	override public function start(x:Float = 0, y:Float = 0)
 	{
 		super.start(x, y);
+		this.hasAmmo = true;
+		alive = true;
 		angle = 0;
 		var direction = x > FlxG.width / 2 ? -180 : 0;
 		velocity.set(SPEED, 0);
 		velocity.rotate(FlxPoint.weak(0, 0), direction);
 		var tween1 = FlxTween.tween(velocity, {x: 0, y: -SPEED}, 1.75, {ease: FlxEase.quadOut});
-		tween1.onUpdate = shoot;
+		// tween1.onUpdate = shoot;
 		var timer = new FlxTimer();
 		// timer.start(1.5, shoot, 1);
 	}
 
-	function shoot(tween:FlxTween)
+	override public function update(elapsed:Float)
 	{
-		if (y < 75 && hasAmmo)
+		super.update(elapsed);
+		shoot();
+	}
+
+	function shoot()
+	{
+		// trace('plane state: ammo: ${hasAmmo} alive: $alive y: $y');
+		if (y < 120 && hasAmmo && alive)
 		{
 			var shotPos = getGraphicMidpoint();
 			var bullet1:EnemyBullet = new EnemyBullet(shotPos.x, shotPos.y, 120);
@@ -57,21 +67,25 @@ class MediumPlane extends Enemy
 			bullets.add(bullet1);
 			bullets.add(bullet2);
 			bullets.add(bullet3);
-
+			trace("medium plane shooting");
 			hasAmmo = false;
 		}
 	}
 
 	override public function getDamage(isBombDamage:Bool = false):Bool
 	{
-		super.getDamage(isBombDamage);
-		animation.play("HIT");
-		if (health <= 0)
+		if (alive)
 		{
-			kill();
-			return true;
+			super.getDamage(isBombDamage);
+			animation.play("HIT");
+			if (health <= 0)
+			{
+				kill();
+				return true;
+			}
+			else
+				return false;
 		}
-		else
-			return false;
+		return false;
 	}
 }

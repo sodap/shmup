@@ -25,7 +25,7 @@ class BigPlane extends Enemy
 		animation.add("NORMAL", [0], 10, true);
 		animation.add("HIT", [1], 20, false);
 		animation.play("NORMAL");
-		health = 50 + Std.int(2 * rank);
+		health = 90 + Std.int(5 * rank);
 		animation.finishCallback = onAnimationFinished;
 		autoShootTimer = new FlxTimer();
 	}
@@ -85,12 +85,17 @@ class BigPlane extends Enemy
 
 	override public function getDamage(isBombDamage:Bool = false):Bool
 	{
-		super.getDamage(isBombDamage);
-		animation.play("HIT");
-		if (health <= 0)
+		if (alive)
 		{
-			kill();
-			return true;
+			super.getDamage(isBombDamage);
+			animation.play("HIT");
+			if (health <= 0)
+			{
+				kill();
+				return true;
+			}
+			else
+				return false;
 		}
 		else
 			return false;

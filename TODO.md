@@ -29,7 +29,7 @@
 - ~~Add Bomb and Powerup spawn logic~~
 - ~~Make a Logo~~
 - ~~Design a decent level~~
-- Add score items
+- ~~Add score items~~
 - Loop system
 - Gameover screen
 - Continues

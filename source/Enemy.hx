@@ -21,6 +21,7 @@ class Enemy extends FlxSprite
 
 	public var spawnBomb = false;
 	public var spawnPowerup = false;
+	public var spawnMedal = false;
 
 	public function new(x:Float = 0, y:Float = 0, timeToSpawn:Float, rank:Int = 1, bullets = null)
 	{

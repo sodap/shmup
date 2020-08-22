@@ -51,6 +51,7 @@ class PlayState extends FlxState
 	var smallPlanes:FlxTypedGroup<SmallPlane>;
 	var bombs:FlxTypedGroup<BombPickup>;
 	var powerups:FlxTypedGroup<Powerup>;
+	var medals:FlxTypedGroup<Medal>;
 	var enemies:FlxTypedGroup<Enemy>;
 
 	public var rank:Int = 1;
@@ -79,6 +80,15 @@ class PlayState extends FlxState
 		background.velocity.set(0, 24 + 4 * rank);
 		add(background);
 
+		medals = new FlxTypedGroup();
+		add(medals);
+
+		bombs = new FlxTypedGroup();
+		add(bombs);
+
+		powerups = new FlxTypedGroup();
+		add(powerups);
+
 		heroBullets = new FlxTypedGroup();
 		add(heroBullets);
 
@@ -90,12 +100,6 @@ class PlayState extends FlxState
 
 		enemyBullets = new FlxTypedGroup();
 		add(enemyBullets);
-
-		bombs = new FlxTypedGroup();
-		add(bombs);
-
-		powerups = new FlxTypedGroup();
-		add(powerups);
 
 		bombEffects = new FlxTypedGroup();
 		add(bombEffects);
@@ -263,11 +267,21 @@ class PlayState extends FlxState
 		return newPowerup;
 	}
 
+	function spawnMedal(x:Float, y:Float):Medal
+	{
+		var newPowerup = new Medal(x, y);
+		medals.add(newPowerup);
+		newPowerup.x = FlxMath.bound(x, 5, FlxG.width - 5 - newPowerup.width);
+		newPowerup.y = FlxMath.bound(y, 5, FlxG.height - 5 - newPowerup.height);
+		newPowerup.velocity.set(background.velocity.x, background.velocity.y);
+		return newPowerup;
+	}
+
 	function smallPlaneWave(timer:FlxTimer)
 	{
 		// 2
 		addEnemy(30, -50, 2, SmallPlane, false, true);
-		addEnemy(FlxG.width - 30, -50, 2, SmallPlane);
+		addEnemy(FlxG.width - 30, -50, 2, SmallPlane, false, false, true);
 
 		// 3.5
 		addEnemy(30, -50, 3.5, SmallPlane);
@@ -327,25 +341,25 @@ class PlayState extends FlxState
 		}
 
 		// 22
-		addEnemy(9, FlxG.height, 22, MediumPlane, enemyBullets);
+		addEnemy(9, FlxG.height, 22, MediumPlane, enemyBullets, false, false, true);
 		addEnemy(9, FlxG.height + 40, 22, MediumPlane, enemyBullets, false, true);
 		addEnemy(9, FlxG.height + 80, 22, MediumPlane, enemyBullets);
 
 		// 25
-		addEnemy(FlxG.width - 35, FlxG.height, 25, MediumPlane, enemyBullets);
+		addEnemy(FlxG.width - 35, FlxG.height, 25, MediumPlane, enemyBullets, false, false, true);
 		addEnemy(FlxG.width - 35, FlxG.height + 40, 25, MediumPlane, enemyBullets, true, false);
 		addEnemy(FlxG.width - 35, FlxG.height + 80, 25, MediumPlane, enemyBullets);
 
 		// 30
-		addEnemy(FlxG.width - 60, FlxG.height + 10, 30, BigPlane, enemyBullets, true, true);
+		addEnemy(FlxG.width - 60, FlxG.height + 10, 30, BigPlane, enemyBullets, true, true, true);
 
 		// 35
-		addEnemy(9, FlxG.height, 35, MediumPlane, enemyBullets);
+		addEnemy(9, FlxG.height, 35, MediumPlane, enemyBullets, false, false, true);
 		addEnemy(9, FlxG.height + 40, 35, MediumPlane, enemyBullets, false, true);
 		addEnemy(9, FlxG.height + 80, 35, MediumPlane, enemyBullets);
 
 		// 38
-		addEnemy(FlxG.width - 35, FlxG.height, 38, MediumPlane, enemyBullets);
+		addEnemy(FlxG.width - 35, FlxG.height, 38, MediumPlane, enemyBullets, false, false, true);
 		addEnemy(FlxG.width - 35, FlxG.height + 40, 38, MediumPlane, enemyBullets, true, false);
 		addEnemy(FlxG.width - 35, FlxG.height + 80, 38, MediumPlane, enemyBullets);
 
@@ -353,7 +367,7 @@ class PlayState extends FlxState
 		addEnemy(FlxG.width / 2 + 1, -50, 37, RedPlane, enemyBullets, false, false);
 		addEnemy(FlxG.width / 2 + 32, -50, 37.5, RedPlane, enemyBullets, false, false);
 		addEnemy(FlxG.width / 2 - 1, -50, 38, RedPlane, enemyBullets, false, false);
-		addEnemy(FlxG.width / 2 - 32, -50, 38.5, RedPlane, enemyBullets, false, false);
+		addEnemy(FlxG.width / 2 - 32, -50, 38.5, RedPlane, enemyBullets, false, false, true);
 		addEnemy(FlxG.width / 2 + 1, -50, 39, RedPlane, enemyBullets, false, false);
 		addEnemy(FlxG.width / 2 + 32, -50, 39.5, RedPlane, enemyBullets, false, false);
 		addEnemy(FlxG.width / 2 - 1, -50, 40, RedPlane, enemyBullets, false, false);
@@ -363,7 +377,7 @@ class PlayState extends FlxState
 		addEnemy(9, FlxG.height, 42, MediumPlane, enemyBullets);
 		addEnemy(FlxG.width - 35, FlxG.height, 43, MediumPlane, enemyBullets);
 		addEnemy(30, -50, 44, SmallPlane, false, true);
-		addEnemy(FlxG.width - 30, -50, 44, SmallPlane);
+		addEnemy(FlxG.width - 30, -50, 44, SmallPlane, false, false, true);
 		addEnemy(9, FlxG.height, 45, MediumPlane, enemyBullets);
 		addEnemy(FlxG.width - 35, FlxG.height, 46, MediumPlane, enemyBullets);
 
@@ -394,22 +408,22 @@ class PlayState extends FlxState
 		// 53-54.5
 		addEnemy(FlxG.width / 2 + 1, -50, 53, RedPlane, enemyBullets, false, false);
 		addEnemy(FlxG.width / 2 + 32, -50, 53.5, RedPlane, enemyBullets, false, false);
-		addEnemy(FlxG.width / 2 - 1, -50, 54, RedPlane, enemyBullets, false, false);
+		addEnemy(FlxG.width / 2 - 1, -50, 54, RedPlane, enemyBullets, false, false, true);
 		addEnemy(FlxG.width / 2 - 32, -50, 54.5, RedPlane, enemyBullets, false, false);
 
 		// 53-58
 		addEnemy(9, FlxG.height, 53, MediumPlane, enemyBullets);
-		addEnemy(FlxG.width - 35, FlxG.height, 53.5, MediumPlane, enemyBullets);
+		addEnemy(FlxG.width - 35, FlxG.height, 53.5, MediumPlane, enemyBullets, false, false, true);
 		addEnemy(30, -50, 54, SmallPlane, false, true);
 		addEnemy(FlxG.width - 30, -50, 54.5, SmallPlane);
-		addEnemy(9, FlxG.height, 55, MediumPlane, enemyBullets);
+		addEnemy(9, FlxG.height, 55, MediumPlane, enemyBullets, false, false, true);
 		addEnemy(FlxG.width - 35, FlxG.height, 55.5, MediumPlane, enemyBullets);
 		addEnemy(9, FlxG.height, 56, MediumPlane, enemyBullets);
 		addEnemy(FlxG.width - 35, FlxG.height, 56.5, MediumPlane, enemyBullets);
 		addEnemy(30, -50, 44, SmallPlane, false, true);
 		addEnemy(FlxG.width - 30, -50, 57, SmallPlane);
 		addEnemy(9, FlxG.height, 57.5, MediumPlane, enemyBullets);
-		addEnemy(FlxG.width - 35, FlxG.height, 58, MediumPlane, enemyBullets);
+		addEnemy(FlxG.width - 35, FlxG.height, 58, MediumPlane, enemyBullets, false, false, true);
 
 		// 11
 
@@ -453,11 +467,12 @@ class PlayState extends FlxState
 	}
 
 	function addEnemy(x:Float, y:Float, time:Float, ObjectClass:Class<Enemy>, bulletGroup:FlxTypedGroup<EnemyBullet> = null, spawnBomb:Bool = false,
-			spawnPowerup:Bool = false)
+			spawnPowerup:Bool = false, spawnMedal:Bool = false)
 	{
 		var _newPlane = Type.createInstance(ObjectClass, [x, y, time, rank, bulletGroup]);
 		_newPlane.spawnPowerup = spawnPowerup;
 		_newPlane.spawnBomb = spawnBomb;
+		_newPlane.spawnMedal = spawnMedal;
 		_newPlane.reset(x, y);
 		enemies.add(_newPlane);
 	}
@@ -470,6 +485,7 @@ class PlayState extends FlxState
 		FlxG.overlap(enemies, hero, killHero);
 		FlxG.overlap(hero, bombs, getBomb);
 		FlxG.overlap(hero, powerups, getPowerup);
+		FlxG.overlap(hero, medals, getMedal);
 
 		for (bomb in bombs)
 		{
@@ -504,6 +520,13 @@ class PlayState extends FlxState
 	{
 		powerup.kill();
 		hero.addPower();
+	}
+
+	function getMedal(hero:Hero, powerup:Medal)
+	{
+		powerup.pickup();
+		score += 100;
+		updateScoreText(score);
 	}
 
 	public function useBomb()
@@ -569,6 +592,10 @@ class PlayState extends FlxState
 			if (enemy.spawnPowerup)
 			{
 				spawnPowerup(enemy.x, enemy.y);
+			}
+			if (enemy.spawnMedal)
+			{
+				spawnMedal(enemy.x, enemy.y);
 			}
 
 			var _newExplosion = explosions.recycle(Explosion);

@@ -5,6 +5,7 @@ import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.effects.FlxFlicker;
+import flixel.math.FlxMath;
 import flixel.math.FlxPoint;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
@@ -16,18 +17,24 @@ class BigPlane extends Enemy
 	var autoShootTimer:FlxTimer;
 	var FIRE_RATE:Float = 4;
 
-	public function new(x:Float = 0, y:Float = 0, timeToSpawn:Float, rank, bullets = null)
+	public function new(x:Float = 0, y:Float = 0, timeToSpawn:Float, rank, loop:Int = 1, bullets = null)
 	{
-		super(x, y, timeToSpawn, rank, bullets);
+		super(x, y, timeToSpawn, rank, loop, bullets);
 		this.scoreValue = 1500;
-		SPEED = Std.int(BASESPEED * 0.5) + 7 * rank;
 		loadGraphic(AssetPaths.big_plane__png, true, 53, 50);
 		animation.add("NORMAL", [0], 10, true);
 		animation.add("HIT", [1], 20, false);
 		animation.play("NORMAL");
-		health = 90 + Std.int(5 * rank);
+		setDifficulty();
 		animation.finishCallback = onAnimationFinished;
 		autoShootTimer = new FlxTimer();
+	}
+
+	function setDifficulty()
+	{
+		SPEED = Std.int(BASESPEED * 0.5) + 4 * rank + 2 * loop;
+		health = 90 + Std.int(4 * rank) + Std.int(loop * 2);
+		FIRE_RATE = 2 + FlxMath.bound((2 - 0.1 * rank - 0.1 * loop), 0, 2);
 	}
 
 	function onAnimationFinished(_anim_name:String)
@@ -38,6 +45,7 @@ class BigPlane extends Enemy
 	override public function start(x:Float = 0, y:Float = 0)
 	{
 		super.start(x, y);
+		setDifficulty();
 		angle = 0;
 		var direction = x > FlxG.width / 2 ? -120 : 30;
 		velocity.set(SPEED, 0);

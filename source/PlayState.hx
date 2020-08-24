@@ -14,6 +14,7 @@ import flixel.math.FlxRandom;
 import flixel.text.FlxBitmapText;
 import flixel.text.FlxText;
 import flixel.util.FlxTimer;
+import haxe.Timer;
 
 class HudText extends FlxBitmapText
 {
@@ -58,6 +59,7 @@ class PlayState extends FlxState
 	public var maxRank:Int = 9;
 
 	public var lives:Int = 3;
+	public var loops = 0;
 	public var score:Int = 0;
 	public var bombAmmo:Int = 3;
 
@@ -72,6 +74,7 @@ class PlayState extends FlxState
 	var loopText:HudText;
 	var bombsHud:FlxTiledSprite;
 	var livesHud:FlxTiledSprite;
+	var loopCountdown:FlxTimer;
 
 	override public function create()
 	{
@@ -249,6 +252,12 @@ class PlayState extends FlxState
 		scoreText.highlight();
 	}
 
+	function updateLoopText(_loop:Int)
+	{
+		loopText.text = '[ $loops ]';
+		loopText.highlight();
+	}
+
 	function spawnBomb(x:Float, y:Float):BombPickup
 	{
 		var newBomb = new BombPickup(x, y);
@@ -275,6 +284,28 @@ class PlayState extends FlxState
 		newPowerup.y = FlxMath.bound(y, 5, FlxG.height - 5 - newPowerup.height);
 		newPowerup.velocity.set(background.velocity.x, background.velocity.y);
 		return newPowerup;
+	}
+
+	function checkWinCondition()
+	{
+		var _anyAlive = false;
+		for (enemy in enemies)
+		{
+			_anyAlive = !enemy.ended;
+		}
+		return !_anyAlive;
+	}
+
+	function loopGame(countDown:Float = 0.01)
+	{
+		if (loopCountdown == null)
+			loopCountdown = new FlxTimer();
+		if (!loopCountdown.active)
+		{
+			loops++;
+			updateLoopText(loops);
+			loopCountdown.start(countDown, smallPlaneWave, 1);
+		}
 	}
 
 	function smallPlaneWave(timer:FlxTimer)
@@ -469,7 +500,7 @@ class PlayState extends FlxState
 	function addEnemy(x:Float, y:Float, time:Float, ObjectClass:Class<Enemy>, bulletGroup:FlxTypedGroup<EnemyBullet> = null, spawnBomb:Bool = false,
 			spawnPowerup:Bool = false, spawnMedal:Bool = false)
 	{
-		var _newPlane = Type.createInstance(ObjectClass, [x, y, time, rank, bulletGroup]);
+		var _newPlane = Type.createInstance(ObjectClass, [x, y, time, rank, loops, bulletGroup]);
 		_newPlane.spawnPowerup = spawnPowerup;
 		_newPlane.spawnBomb = spawnBomb;
 		_newPlane.spawnMedal = spawnMedal;
@@ -487,12 +518,27 @@ class PlayState extends FlxState
 		FlxG.overlap(hero, powerups, getPowerup);
 		FlxG.overlap(hero, medals, getMedal);
 
+		if (checkWinCondition())
+		{
+			loopGame(3);
+			trace('game won');
+		}
+
 		for (bomb in bombs)
 		{
 			if (Math.abs(bomb.x - hero.x) < 16 && Math.abs(bomb.y - hero.y) < 16)
 			{
 				bomb.x = FlxMath.lerp(bomb.x, hero.x, 0.15);
 				bomb.y = FlxMath.lerp(bomb.y, hero.y, 0.15);
+			}
+		}
+
+		for (medal in medals)
+		{
+			if (!medal.taken && Math.abs(medal.x - hero.x) < 16 && Math.abs(medal.y - hero.y) < 16)
+			{
+				medal.x = FlxMath.lerp(medal.x, hero.x, 0.15);
+				medal.y = FlxMath.lerp(medal.y, hero.y, 0.15);
 			}
 		}
 
@@ -624,6 +670,7 @@ class PlayState extends FlxState
 
 			score += enemy.scoreValue;
 			updateScoreText(score);
+			enemy.ended = true;
 		}
 		if (bullet != null)
 			bullet.kill();

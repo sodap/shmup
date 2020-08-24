@@ -15,18 +15,23 @@ class MediumPlane extends Enemy
 {
 	var hasAmmo = true;
 
-	public function new(x:Float = 0, y:Float = 0, timeToSpawn:Float, rank, bullets)
+	public function new(x:Float = 0, y:Float = 0, timeToSpawn:Float, rank, loop:Int = 1, bullets)
 	{
-		super(x, y, timeToSpawn, rank, bullets);
+		super(x, y, timeToSpawn, rank, loop, bullets);
 		this.scoreValue = 100;
-		SPEED = Std.int(BASESPEED * 1.5) + 7 * rank;
 		loadGraphic(AssetPaths.medium_plane__png, true, 21, 21);
 		animation.add("NORMAL", [0], 10, true);
 		animation.add("HIT", [1], 20, false);
 		animation.play("NORMAL");
-		health = 5 + Std.int(1.5 * rank);
+		setDifficulty();
 		animation.finishCallback = onAnimationFinished;
 		hasAmmo = true;
+	}
+
+	function setDifficulty()
+	{
+		health = 5 + Std.int(1 * rank);
+		SPEED = Std.int(BASESPEED * 1.5) + Std.int(2.5 * rank + 0.5 * loop);
 	}
 
 	function onAnimationFinished(_anim_name:String)
@@ -37,6 +42,7 @@ class MediumPlane extends Enemy
 	override public function start(x:Float = 0, y:Float = 0)
 	{
 		super.start(x, y);
+		setDifficulty();
 		this.hasAmmo = true;
 		alive = true;
 		angle = 0;

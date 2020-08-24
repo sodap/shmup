@@ -16,21 +16,33 @@ class Enemy extends FlxSprite
 	public var scoreValue = 10;
 
 	var rank:Int = 1;
+	var loop:Int = 0;
 	var bullets:FlxGroup; // TypedGroup<EnemyBullet>;
 	var started = false;
+	var appeared = false;
+
+	public var ended = false;
 
 	public var spawnBomb = false;
 	public var spawnPowerup = false;
 	public var spawnMedal = false;
 
-	public function new(x:Float = 0, y:Float = 0, timeToSpawn:Float, rank:Int = 1, bullets = null)
+	public function new(x:Float = 0, y:Float = 0, timeToSpawn:Float, rank:Int = 1, loop:Int = 1, bullets = null)
 	{
 		super(x, y);
 		this.rank = rank;
+		this.loop = loop;
 		this.bullets = bullets;
 		loadGraphic(AssetPaths.small_plane__png, false, 11, 15);
 		var _spawnTimer = new FlxTimer();
 		_spawnTimer.start(timeToSpawn, spawn, 1);
+	}
+
+	function hasEnded():Bool
+	{
+		if (isOnScreen())
+			appeared = true;
+		return appeared && !isOnScreen();
 	}
 
 	function spawn(timer:FlxTimer)
@@ -59,5 +71,11 @@ class Enemy extends FlxSprite
 	override public function update(elapsed:Float)
 	{
 		super.update(elapsed);
+		if (!ended)
+		{
+			ended = hasEnded();
+			if (ended)
+				trace('enemy exit');
+		}
 	}
 }

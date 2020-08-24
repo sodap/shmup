@@ -13,17 +13,23 @@ import lime.utils.Assets;
 
 class SmallPlane extends Enemy
 {
-	public function new(x:Float = 0, y:Float = 0, timeToSpawn:Float, rank)
+	public function new(x:Float = 0, y:Float = 0, timeToSpawn:Float, rank, loop:Int = 1)
 	{
-		super(x, y, timeToSpawn, rank);
+		super(x, y, timeToSpawn, rank, loop);
 		this.scoreValue = 10;
 		SPEED = BASESPEED * 2 + 5 * rank;
 		loadGraphic(AssetPaths.small_plane__png, false, 11, 15);
 	}
 
+	function setDifficulty()
+	{
+		SPEED = BASESPEED * 2 + 5 * rank;
+	}
+
 	override public function start(x:Float = 0, y:Float = 0)
 	{
 		super.start(x, y);
+		setDifficulty();
 		angle = 180;
 		var direction = 90;
 		velocity.set(SPEED, 0);

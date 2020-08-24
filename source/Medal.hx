@@ -11,6 +11,8 @@ import lime.utils.Assets;
 
 class Medal extends FlxSprite
 {
+	public var taken = false;
+
 	public function new(x:Float = 0, y:Float = 0)
 	{
 		super(x, y);
@@ -21,6 +23,7 @@ class Medal extends FlxSprite
 
 	public function pickup()
 	{
+		taken = true;
 		loadGraphic(AssetPaths.scorePickup__png, false, 25, 9);
 		velocity.set(0, -30);
 		var tween1 = FlxTween.tween(velocity, {x: 0, y: 0}, 1, {ease: FlxEase.quadOut});

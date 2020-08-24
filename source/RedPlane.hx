@@ -16,17 +16,22 @@ import lime.utils.Assets;
 
 class RedPlane extends Enemy
 {
-	public function new(x:Float = 0, y:Float = 0, timeToSpawn:Float, rank, bullets)
+	public function new(x:Float = 0, y:Float = 0, timeToSpawn:Float, rank, loop:Int = 1, bullets)
 	{
-		super(x, y, timeToSpawn, rank, bullets);
+		super(x, y, timeToSpawn, rank, loop, bullets);
 		this.scoreValue = 50;
-		SPEED = 140 + 5 * rank;
 		loadGraphic(AssetPaths.red_plane__png, false, 11, 15);
+	}
+
+	function setDifficulty()
+	{
+		SPEED = 140 + 5 * rank;
 	}
 
 	override public function start(x:Float = 0, y:Float = 0)
 	{
 		super.start(x, y);
+		setDifficulty();
 		angle = 180;
 		var direction = 90;
 		velocity.set(SPEED, 0);

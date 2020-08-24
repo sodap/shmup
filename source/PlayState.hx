@@ -75,9 +75,16 @@ class PlayState extends FlxState
 	var bombsHud:FlxTiledSprite;
 	var livesHud:FlxTiledSprite;
 	var loopCountdown:FlxTimer;
+	var continueText:FlxBitmapText;
+	var gameOverText:FlxBitmapText;
+	var countDownText:HudText;
+
+	var gameOverCountDown:Int = 9;
+	var isGameOver:Bool = false;
 
 	override public function create()
 	{
+		FlxG.mouse.visible = false;
 		super.create();
 		background = new FlxBackdrop("assets/images/background.png", 0, 0, true, true, 0, 0);
 		background.velocity.set(0, 24 + 4 * rank);
@@ -170,6 +177,39 @@ class PlayState extends FlxState
 		scoreTitle.scrollFactor.set(0, 0);
 		add(scoreTitle);
 
+		continueText = new FlxBitmapText(silverFont);
+		continueText.text = "CONTINUE?";
+		continueText.alignment = FlxTextAlign.CENTER;
+		continueText.letterSpacing = 1;
+		continueText.lineSpacing = 1;
+		continueText.padding = 0;
+		continueText.x = FlxG.width / 2 - continueText.width / 2;
+		continueText.y = FlxG.height / 2 - 16;
+		continueText.scrollFactor.set(0, 0);
+		add(continueText);
+
+		gameOverText = new FlxBitmapText(silverFont);
+		gameOverText.text = "GAME OVER";
+		gameOverText.alignment = FlxTextAlign.CENTER;
+		gameOverText.letterSpacing = 1;
+		gameOverText.lineSpacing = 1;
+		gameOverText.padding = 0;
+		gameOverText.x = FlxG.width / 2 - gameOverText.width / 2;
+		gameOverText.y = FlxG.height / 2;
+		gameOverText.scrollFactor.set(0, 0);
+		add(gameOverText);
+
+		countDownText = new HudText(scoreFont, highlightScoreFont);
+		countDownText.text = "9";
+		countDownText.alignment = FlxTextAlign.CENTER;
+		countDownText.letterSpacing = 1;
+		countDownText.lineSpacing = 1;
+		countDownText.padding = 0;
+		countDownText.x = FlxG.width / 2 - countDownText.width / 2;
+		countDownText.y = FlxG.height / 2;
+		countDownText.scrollFactor.set(0, 0);
+		add(countDownText);
+
 		scoreText = new HudText(scoreFont, highlightScoreFont);
 		scoreText.text = "00000000";
 		scoreText.alignment = FlxTextAlign.CENTER;
@@ -219,6 +259,50 @@ class PlayState extends FlxState
 		livesHud.y = FlxG.height - 4 - bombsHud.height;
 		updateLivesHud(lives);
 		add(livesHud);
+
+		hideContinueHud();
+	}
+
+	function showContinueHud()
+	{
+		gameOverCountDown = 9;
+		countDownText.text = '$gameOverCountDown';
+
+		continueText.visible = true;
+		countDownText.visible = true;
+	}
+
+	function hideContinueHud()
+	{
+		continueText.visible = false;
+		countDownText.visible = false;
+		gameOverText.visible = false;
+	}
+
+	function startCountDown()
+	{
+		showContinueHud();
+		var _timer = new FlxTimer();
+		_timer.start(1.5, updateCountDown, 1);
+	}
+
+	function updateCountDown(timer:FlxTimer)
+	{
+		if (isGameOver)
+		{
+			if (gameOverCountDown > 0)
+			{
+				var _timer = new FlxTimer();
+				_timer.start(1.5, updateCountDown, 1);
+				gameOverCountDown--;
+				updateCountdownHud(gameOverCountDown);
+			}
+			else
+			{
+				hideContinueHud();
+				gameOverText.visible = true;
+			}
+		}
 	}
 
 	public function updateBombsHud(_bombs:Int)
@@ -244,6 +328,12 @@ class PlayState extends FlxState
 	{
 		rankText.text = '[ $rank ]';
 		rankText.highlight();
+	}
+
+	public function updateCountdownHud(countdown:Int = 1)
+	{
+		countDownText.text = '$countdown';
+		countDownText.highlight();
 	}
 
 	function updateScoreText(_score:Int)
@@ -551,8 +641,32 @@ class PlayState extends FlxState
 			}
 		}
 
-		if (FlxG.keys.anyJustPressed([ENTER]))
+		if (FlxG.keys.anyJustPressed([ENTER]) && isGameOver)
+		{
+			continueGame();
+		}
+
+		if (FlxG.keys.anyJustPressed([BACKSPACE]))
 			FlxG.switchState(new PlayState());
+	}
+
+	function continueGame()
+	{
+		isGameOver = false;
+		var _timer = new FlxTimer();
+		_timer.start(0.25, spawnHero);
+		hideContinueHud();
+		score = 0;
+		lives = 3;
+		for (enemy in enemies)
+		{
+			if (!enemy.started)
+			{
+				enemy.spawnTimer.active = true;
+			}
+		}
+		updateLivesHud(lives);
+		updateScoreText(score);
 	}
 
 	function getBomb(hero:Hero, bomb:BombPickup)
@@ -610,6 +724,19 @@ class PlayState extends FlxState
 			{
 				var _timer = new FlxTimer();
 				_timer.start(1, spawnHero);
+			}
+			else
+			{
+				isGameOver = true;
+				for (enemy in enemies)
+				{
+					if (!enemy.started)
+					{
+						enemy.spawnTimer.active = false;
+					}
+				}
+				startCountDown();
+				showContinueHud();
 			}
 			updateBombsHud(0);
 			updateLivesHud(lives);

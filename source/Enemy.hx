@@ -18,7 +18,9 @@ class Enemy extends FlxSprite
 	var rank:Int = 1;
 	var loop:Int = 0;
 	var bullets:FlxGroup; // TypedGroup<EnemyBullet>;
-	var started = false;
+
+	public var started = false;
+
 	var appeared = false;
 
 	public var ended = false;
@@ -26,6 +28,7 @@ class Enemy extends FlxSprite
 	public var spawnBomb = false;
 	public var spawnPowerup = false;
 	public var spawnMedal = false;
+	public var spawnTimer:FlxTimer;
 
 	public function new(x:Float = 0, y:Float = 0, timeToSpawn:Float, rank:Int = 1, loop:Int = 1, bullets = null)
 	{
@@ -34,8 +37,8 @@ class Enemy extends FlxSprite
 		this.loop = loop;
 		this.bullets = bullets;
 		loadGraphic(AssetPaths.small_plane__png, false, 11, 15);
-		var _spawnTimer = new FlxTimer();
-		_spawnTimer.start(timeToSpawn, spawn, 1);
+		this.spawnTimer = new FlxTimer();
+		spawnTimer.start(timeToSpawn, spawn, 1);
 	}
 
 	function hasEnded():Bool

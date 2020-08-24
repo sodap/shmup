@@ -31,8 +31,8 @@
 - ~~Design a decent level~~
 - ~~Add score items~~
 - ~~Loop system~~
-- Gameover screen
-- Continues
+- ~~Gameover screen~~
+- ~~Continues~~
 - Title Screen
 - How To Play Screen
 - Boss

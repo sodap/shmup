@@ -35,4 +35,6 @@
 - ~~Continues~~
 - Title Screen
 - How To Play Screen
+- Hi-Scores
+- Attract mode maybe?
 - Boss

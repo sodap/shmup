@@ -30,7 +30,7 @@
 - ~~Make a Logo~~
 - ~~Design a decent level~~
 - ~~Add score items~~
-- Loop system
+- ~~Loop system~~
 - Gameover screen
 - Continues
 - Title Screen

@@ -33,8 +33,8 @@
 - ~~Loop system~~
 - ~~Gameover screen~~
 - ~~Continues~~
+- Attract mode
 - Title Screen
 - How To Play Screen
 - Hi-Scores
-- Attract mode maybe?
 - Boss

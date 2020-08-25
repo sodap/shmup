@@ -84,6 +84,7 @@ class PlayState extends FlxState
 
 	override public function create()
 	{
+		FlxG.save.bind("Gamesave");
 		FlxG.mouse.visible = false;
 		super.create();
 		background = new FlxBackdrop("assets/images/background.png", 0, 0, true, true, 0, 0);
@@ -135,6 +136,53 @@ class PlayState extends FlxState
 		highlightScoreFont = FlxBitmapFont.fromAngelCode("assets/fonts/tacticalbitScoresHighlight_0.png", "assets/fonts/tacticalbitScores.fnt");
 
 		createHud(4, 4);
+		if (Reg.replaying)
+		{
+			trace('attract mode started');
+			startAttractMode();
+		}
+		else
+		{
+			FlxG.vcr.stopReplay();
+		}
+	}
+
+	function startRecording()
+	{
+		if (!Reg.recording)
+		{
+			Reg.replaying = false;
+			Reg.recording = true;
+			FlxG.vcr.startRecording(false);
+		}
+	}
+
+	function loadReplay()
+	{
+		Reg.replaying = true;
+		Reg.recording = false;
+		var save:String = FlxG.vcr.stopRecording(false);
+		FlxG.save.data.attractMode = save;
+		FlxG.vcr.loadReplay(FlxG.save.data.attractMode, new PlayState(), [], null, startAttractMode);
+	}
+
+	function startAttractMode()
+	{
+		FlxG.vcr.loadReplay(FlxG.save.data.attractMode, FlxG.state, ["ENTER"], null, restartGame);
+	}
+
+	function restartGame()
+	{
+		// Reg.replaying = false;
+		FlxG.vcr.stopReplay();
+		FlxG.switchState(new PlayState());
+	}
+
+	function startPlaying()
+	{
+		Reg.replaying = false;
+		trace(${Reg.replaying});
+		restartGame();
 	}
 
 	function createHud(marginX:Float, marginY:Float)
@@ -220,7 +268,6 @@ class PlayState extends FlxState
 		scoreText.y = scoreTitle.y + lineHeight;
 		scoreText.scrollFactor.set(0, 0);
 		scoreText.fieldWidth = scoreText.textWidth - 20;
-		trace('score text textwidth: ${scoreText.textWidth} width: ${scoreText.width}');
 		add(scoreText);
 
 		var loopTitle = new FlxBitmapText(silverFont);
@@ -645,6 +692,24 @@ class PlayState extends FlxState
 		{
 			continueGame();
 		}
+
+		if (FlxG.keys.anyPressed([ENTER]) && Reg.replaying)
+		{
+			trace("hi game");
+			startPlaying();
+		}
+
+		#if DEV
+		if (FlxG.keys.justPressed.R)
+		{
+			startRecording();
+			// loadReplay();
+		}
+		if (FlxG.keys.justPressed.P && Reg.recording)
+		{
+			loadReplay();
+		}
+		#end
 
 		if (FlxG.keys.anyJustPressed([BACKSPACE]))
 			FlxG.switchState(new PlayState());

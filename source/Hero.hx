@@ -132,9 +132,9 @@ class Hero extends FlxSprite
 		var right:Bool = FlxG.keys.anyPressed([RIGHT, D]);
 
 		var _move = handleMovement(up, down, left, right);
-		if (FlxG.keys.anyPressed([CONTROL]) && !autoShootTimer.active)
+		if (FlxG.keys.anyPressed([X, O]) && !autoShootTimer.active)
 			shootBullets(powerLevel);
-		if (FlxG.keys.anyJustPressed([SHIFT]) && bombs > 0)
+		if (FlxG.keys.anyJustPressed([Z, P]) && bombs > 0)
 			gameState.useBomb();
 
 		// power level controls (FOR TESTING)

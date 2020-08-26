@@ -11,7 +11,7 @@ class Main extends Sprite
 	{
 		super();
 		stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
-		addChild(new FlxGame(224, 256, PlayState));
+		addChild(new FlxGame(224, 256, TitleState));
 	}
 
 	function onKeyDown(key:KeyboardEvent)

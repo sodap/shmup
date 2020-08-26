@@ -6,6 +6,7 @@ import flixel.FlxSprite;
 import flixel.FlxState;
 import flixel.addons.display.FlxBackdrop;
 import flixel.addons.display.FlxTiledSprite;
+import flixel.effects.FlxFlicker;
 import flixel.graphics.frames.FlxBitmapFont;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.group.FlxGroup;
@@ -77,6 +78,8 @@ class PlayState extends FlxState
 	var loopCountdown:FlxTimer;
 	var continueText:FlxBitmapText;
 	var gameOverText:FlxBitmapText;
+	var readyText:FlxBitmapText;
+	var attractModeText:FlxBitmapText;
 	var countDownText:HudText;
 
 	var gameOverCountDown:Int = 9;
@@ -168,7 +171,13 @@ class PlayState extends FlxState
 
 	function startAttractMode()
 	{
-		FlxG.vcr.loadReplay(FlxG.save.data.attractMode, FlxG.state, ["ENTER"], null, restartGame);
+		FlxG.vcr.loadReplay(FlxG.save.data.attractMode, FlxG.state, ["ANY"], null, endAttractMode);
+	}
+
+	function endAttractMode()
+	{
+		FlxG.vcr.stopReplay();
+		FlxG.switchState(new TitleState());
 	}
 
 	function restartGame()
@@ -247,6 +256,37 @@ class PlayState extends FlxState
 		gameOverText.scrollFactor.set(0, 0);
 		add(gameOverText);
 
+		readyText = new FlxBitmapText(silverFont);
+		readyText.text = "READY!";
+		readyText.alignment = FlxTextAlign.CENTER;
+		readyText.letterSpacing = 1;
+		readyText.lineSpacing = 1;
+		readyText.padding = 0;
+		readyText.x = FlxG.width / 2 - readyText.width / 2;
+		readyText.y = FlxG.height / 2 - readyText.height / 2;
+		readyText.scrollFactor.set(0, 0);
+
+		attractModeText = new FlxBitmapText(silverFont);
+		attractModeText.text = "DEMO MODE\n PRESS ANY KEY";
+		attractModeText.alignment = FlxTextAlign.CENTER;
+		attractModeText.letterSpacing = 1;
+		attractModeText.lineSpacing = 1;
+		attractModeText.padding = 0;
+		attractModeText.x = FlxG.width / 2 - attractModeText.width / 2;
+		attractModeText.y = FlxG.height / 2 - attractModeText.height / 2;
+		attractModeText.scrollFactor.set(0, 0);
+		if (Reg.replaying)
+		{
+			add(attractModeText);
+			var blinkTimer = new FlxTimer();
+			blinkTimer.start(0.9, hideAttractModeText, 1);
+		}
+		else
+		{
+			add(readyText);
+			FlxFlicker.flicker(readyText, 3, 0.3, false);
+		}
+
 		countDownText = new HudText(scoreFont, highlightScoreFont);
 		countDownText.text = "9";
 		countDownText.alignment = FlxTextAlign.CENTER;
@@ -308,6 +348,18 @@ class PlayState extends FlxState
 		add(livesHud);
 
 		hideContinueHud();
+	}
+
+	function hideAttractModeText(timer:FlxTimer)
+	{
+		attractModeText.visible = false;
+		timer.start(0.45, showAttractModeText, 1);
+	}
+
+	function showAttractModeText(timer:FlxTimer)
+	{
+		attractModeText.visible = true;
+		timer.start(1.5, hideAttractModeText, 1);
 	}
 
 	function showContinueHud()
@@ -688,15 +740,14 @@ class PlayState extends FlxState
 			}
 		}
 
-		if (FlxG.keys.anyJustPressed([ENTER]) && isGameOver)
+		if (FlxG.keys.anyJustPressed([SPACE]) && isGameOver)
 		{
 			continueGame();
 		}
 
 		if (FlxG.keys.anyPressed([ENTER]) && Reg.replaying)
 		{
-			trace("hi game");
-			startPlaying();
+			//	startPlaying();
 		}
 
 		#if DEV

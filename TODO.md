@@ -33,8 +33,9 @@
 - ~~Loop system~~
 - ~~Gameover screen~~
 - ~~Continues~~
-- Attract mode
-- Title Screen
-- How To Play Screen
+- ~~Title Screen~~
+- ~~Attract mode~~
 - Hi-Scores
+- Show Hi-Scores in attract mode
+- How To Play Screen
 - Boss

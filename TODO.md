@@ -35,7 +35,8 @@
 - ~~Continues~~
 - ~~Title Screen~~
 - ~~Attract mode~~
-- Hi-Scores
-- Show Hi-Scores in attract mode
+- ~~Show Hi-Scores in attract mode~~
+- Hi-Scores Input
 - How To Play Screen
 - Boss
+- Record/Edit a cool gameplay for attract mode

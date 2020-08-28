@@ -17,13 +17,15 @@ import flixel.text.FlxText;
 import flixel.util.FlxTimer;
 import haxe.Timer;
 
-class TitleState extends FlxState
+class HiScoresState extends FlxState
 {
 	var background:FlxBackdrop;
 	var title:FlxSprite;
 	var hero:Hero;
 	var titleTimeout:FlxTimer;
-	var gameOverText:FlxBitmapText;
+	var hiScoreText:FlxBitmapText;
+	var titleText:FlxBitmapText;
+	var nameText:FlxBitmapText;
 	var gameStarted:Bool = false;
 
 	var yellowFont:FlxBitmapFont;
@@ -31,7 +33,7 @@ class TitleState extends FlxState
 	var goldFont:FlxBitmapFont;
 	var scoreFont:FlxBitmapFont;
 	var highlightScoreFont:FlxBitmapFont;
-	var blinkTimer:FlxTimer;
+	var addItemTimer:FlxTimer;
 
 	override public function create()
 	{
@@ -44,29 +46,53 @@ class TitleState extends FlxState
 		FlxG.save.bind("Gamesave");
 		FlxG.mouse.visible = false;
 		super.create();
-		background = new FlxBackdrop("assets/images/background.png", 0, 0, true, true, 0, 0);
-		background.velocity.set(0, 28);
+		background = new FlxBackdrop("assets/images/hiscoresBackground.png", 0, 0, true, true, 0, 0);
+		// background.velocity.set(0, 28);
 		add(background);
 
-		title = new FlxSprite(0, 0, "assets/images/titleBackground.png");
-		add(title);
+		/*title = new FlxSprite(0, 0, "assets/images/titleBackground.png");
+			add(title); */
 
 		titleTimeout = new FlxTimer();
-		titleTimeout.start(15, timeout, 1);
+		titleTimeout.start(22, timeout, 1);
 
-		gameOverText = new FlxBitmapText(silverFont);
-		gameOverText.text = "PRESS SPACE \n TO START";
-		gameOverText.alignment = FlxTextAlign.CENTER;
-		gameOverText.letterSpacing = 1;
-		gameOverText.lineSpacing = 1;
-		gameOverText.padding = 0;
-		gameOverText.x = FlxG.width / 2 - gameOverText.width / 2;
-		gameOverText.y = FlxG.height / 2 + 48;
-		gameOverText.scrollFactor.set(0, 0);
-		add(gameOverText);
+		titleText = new FlxBitmapText(yellowFont);
+		titleText.text = "HI - SCORES";
+		titleText.alignment = FlxTextAlign.CENTER;
+		titleText.letterSpacing = 1;
+		titleText.lineSpacing = 3;
+		titleText.padding = 0;
+		titleText.x = FlxG.width / 2 - titleText.width / 2;
+		titleText.y = 50;
+		titleText.scrollFactor.set(0, 0);
+		add(titleText);
 
-		blinkTimer = new FlxTimer();
-		blinkTimer.start(0.9, hideText, 1);
+		hiScoreText = new FlxBitmapText(scoreFont);
+		hiScoreText.text = "";
+		hiScoreText.alignment = FlxTextAlign.RIGHT;
+		hiScoreText.letterSpacing = 1;
+		hiScoreText.lineSpacing = 3;
+		hiScoreText.padding = 0;
+		hiScoreText.x = FlxG.width - 50 - hiScoreText.width;
+		hiScoreText.y = 80;
+		hiScoreText.scrollFactor.set(0, 0);
+		add(hiScoreText);
+
+		nameText = new FlxBitmapText(silverFont);
+		nameText.text = "";
+		nameText.alignment = FlxTextAlign.RIGHT;
+		nameText.fieldWidth = 50;
+		nameText.letterSpacing = 1;
+		nameText.lineSpacing = 1;
+		nameText.padding = 0;
+		nameText.x = 40;
+		nameText.y = 80;
+		nameText.scrollFactor.set(0, 0);
+		add(nameText);
+
+		addItemTimer = new FlxTimer();
+		var _loops:Int = 8; // FlxG.save.data.hiScores.length; // - 1;
+		addItemTimer.start(0.9, addItem, _loops);
 		/*
 			if (Reg.replaying)
 			{
@@ -80,26 +106,24 @@ class TitleState extends FlxState
 		 */
 	}
 
-	function hideText(timer:FlxTimer)
+	function addItem(timer:FlxTimer)
 	{
-		gameOverText.visible = false;
-		timer.start(0.25, showText, 1);
-	}
+		nameText.text += '${timer.elapsedLoops}. ${FlxG.save.data.hiScores[timer.elapsedLoops - 1].name} \n';
 
-	function showText(timer:FlxTimer)
-	{
-		gameOverText.visible = true;
-		timer.start(0.9, hideText, 1);
+		hiScoreText.text += '${FlxG.save.data.hiScores[timer.elapsedLoops - 1].score} \n';
+
+		hiScoreText.x = FlxG.width - 40 - hiScoreText.width;
 	}
 
 	function timeout(timer:FlxTimer)
 	{
-		FlxG.switchState(new HiScoresState()); // startAttractMode();
+		startAttractMode();
 	}
 
 	function startAttractMode()
 	{
-		FlxG.vcr.loadReplay(FlxG.save.data.attractMode, new PlayState(), ["ENTER"], null, restartGame);
+		var _replay:String = sys.io.File.getContent("assets/data/attract.dnv");
+		FlxG.vcr.loadReplay(_replay, new PlayState(), ["ENTER"], null, restartGame);
 	}
 
 	function restartGame()
@@ -121,16 +145,7 @@ class TitleState extends FlxState
 
 		if (FlxG.keys.anyJustPressed([SPACE]) && !gameStarted)
 		{
-			gameStarted = true;
-			blinkTimer.active = false;
-			gameOverText.visible = true;
-			FlxFlicker.flicker(gameOverText, 4.5);
-			gameOverText.text = "LET'S GO!";
-			gameOverText.x = FlxG.width / 2 - gameOverText.width / 2;
-			gameOverText.y = FlxG.height / 2 + 48;
-			var _timer = new FlxTimer();
-			_timer.start(1.5, startGame, 1);
-			//	continueGame();
+			FlxG.switchState(new TitleState());
 		}
 	}
 }

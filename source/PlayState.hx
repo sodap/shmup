@@ -6,6 +6,7 @@ import flixel.FlxSprite;
 import flixel.FlxState;
 import flixel.addons.display.FlxBackdrop;
 import flixel.addons.display.FlxTiledSprite;
+import flixel.addons.editors.tiled.TiledMap;
 import flixel.effects.FlxFlicker;
 import flixel.graphics.frames.FlxBitmapFont;
 import flixel.group.FlxGroup.FlxTypedGroup;
@@ -14,8 +15,11 @@ import flixel.math.FlxMath;
 import flixel.math.FlxRandom;
 import flixel.text.FlxBitmapText;
 import flixel.text.FlxText;
+import flixel.tile.FlxTilemap;
 import flixel.util.FlxTimer;
 import haxe.Timer;
+import lime.utils.Assets;
+import sys.io.File;
 
 class HudText extends FlxBitmapText
 {
@@ -40,6 +44,12 @@ class HudText extends FlxBitmapText
 	{
 		this.font = normalFont;
 	}
+}
+
+typedef HiScore =
+{
+	var name:String;
+	var score:Int;
 }
 
 class PlayState extends FlxState
@@ -88,6 +98,20 @@ class PlayState extends FlxState
 	override public function create()
 	{
 		FlxG.save.bind("Gamesave");
+		if (FlxG.save.data.hiScores == null)
+		{
+			var _defaultHiscores:Array<HiScore> = [
+				{name: "ANA", score: 30000},
+				{name: "EDU", score: 20000},
+				{name: "GOD", score: 15000},
+				{name: "MOM", score: 12500},
+				{name: "DAD", score: 11250},
+				{name: "LUC", score: 10000},
+				{name: "PAC", score: 8000},
+				{name: "GUY", score: 5000}
+			];
+			FlxG.save.data.hiScores = _defaultHiscores;
+		}
 		FlxG.mouse.visible = false;
 		super.create();
 		background = new FlxBackdrop("assets/images/background.png", 0, 0, true, true, 0, 0);
@@ -165,13 +189,16 @@ class PlayState extends FlxState
 		Reg.replaying = true;
 		Reg.recording = false;
 		var save:String = FlxG.vcr.stopRecording(false);
+		sys.io.File.saveContent("assets/data/attract.dnv", save);
 		FlxG.save.data.attractMode = save;
-		FlxG.vcr.loadReplay(FlxG.save.data.attractMode, new PlayState(), [], null, startAttractMode);
+		var _replay:String = sys.io.File.getContent("assets/data/attract.dnv");
+		FlxG.vcr.loadReplay(_replay, new PlayState(), [], null, startAttractMode);
 	}
 
 	function startAttractMode()
 	{
-		FlxG.vcr.loadReplay(FlxG.save.data.attractMode, FlxG.state, ["ANY"], null, endAttractMode);
+		var _replay:String = sys.io.File.getContent("assets/data/attract.dnv");
+		FlxG.vcr.loadReplay(_replay, FlxG.state, ["ANY"], null, endAttractMode);
 	}
 
 	function endAttractMode()
@@ -800,9 +827,12 @@ class PlayState extends FlxState
 
 	function getMedal(hero:Hero, powerup:Medal)
 	{
-		powerup.pickup();
-		score += 100;
-		updateScoreText(score);
+		if (!powerup.taken)
+		{
+			score += 100;
+			powerup.pickup();
+			updateScoreText(score);
+		}
 	}
 
 	public function useBomb()

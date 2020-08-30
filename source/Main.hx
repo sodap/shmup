@@ -11,7 +11,7 @@ class Main extends Sprite
 	{
 		super();
 		stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
-		addChild(new FlxGame(224, 256, TitleState));
+		addChild(new FlxGame(224, 256, HiScoresState));
 	}
 
 	function onKeyDown(key:KeyboardEvent)
@@ -20,5 +20,6 @@ class Main extends Sprite
 		{
 			Reg.replaying = false;
 		}
+		Reg.lastKey = key.charCode;
 	}
 }

@@ -46,12 +46,6 @@ class HudText extends FlxBitmapText
 	}
 }
 
-typedef HiScore =
-{
-	var name:String;
-	var score:Int;
-}
-
 class PlayState extends FlxState
 {
 	var background:FlxBackdrop;
@@ -97,21 +91,9 @@ class PlayState extends FlxState
 
 	override public function create()
 	{
-		FlxG.save.bind("Gamesave");
-		if (FlxG.save.data.hiScores == null)
-		{
-			var _defaultHiscores:Array<HiScore> = [
-				{name: "ANA", score: 30000},
-				{name: "EDU", score: 20000},
-				{name: "GOD", score: 15000},
-				{name: "MOM", score: 12500},
-				{name: "DAD", score: 11250},
-				{name: "LUC", score: 10000},
-				{name: "PAC", score: 8000},
-				{name: "GUY", score: 5000}
-			];
-			FlxG.save.data.hiScores = _defaultHiscores;
-		}
+		Reg.finalScore = 0;
+		Reg.inputNewScore = false;
+
 		FlxG.mouse.visible = false;
 		super.create();
 		background = new FlxBackdrop("assets/images/background.png", 0, 0, true, true, 0, 0);
@@ -425,10 +407,30 @@ class PlayState extends FlxState
 			}
 			else
 			{
+				Reg.finalScore = score;
 				hideContinueHud();
 				gameOverText.visible = true;
+				for (i in 0...8)
+				{
+					trace('Is it $i highscore');
+					if (Reg.finalScore > FlxG.save.data.hiScores[i].score)
+					{
+						Reg.inputNewScore = true;
+						trace('new hiscore! position: i');
+						break;
+					}
+				}
+				Reg.goToTitle = true;
+				Reg.finalScore = score;
+				var _timer = new FlxTimer();
+				_timer.start(3, goToHiscores, 0);
 			}
 		}
+	}
+
+	function goToHiscores(timer:FlxTimer)
+	{
+		FlxG.switchState(new HiScoresState());
 	}
 
 	public function updateBombsHud(_bombs:Int)

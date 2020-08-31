@@ -774,8 +774,8 @@ class PlayState extends FlxState
 		{
 			if (Math.abs(bomb.x - hero.x) < 16 && Math.abs(bomb.y - hero.y) < 16)
 			{
-				bomb.x = FlxMath.lerp(bomb.x, hero.x, 0.15);
-				bomb.y = FlxMath.lerp(bomb.y, hero.y, 0.15);
+				bomb.x = FlxMath.lerp(bomb.x, hero.x, 0.35);
+				bomb.y = FlxMath.lerp(bomb.y, hero.y, 0.35);
 			}
 		}
 
@@ -783,8 +783,8 @@ class PlayState extends FlxState
 		{
 			if (!medal.taken && Math.abs(medal.x - hero.x) < 16 && Math.abs(medal.y - hero.y) < 16)
 			{
-				medal.x = FlxMath.lerp(medal.x, hero.x, 0.15);
-				medal.y = FlxMath.lerp(medal.y, hero.y, 0.15);
+				medal.x = FlxMath.lerp(medal.x, hero.x, 0.35);
+				medal.y = FlxMath.lerp(medal.y, hero.y, 0.35);
 			}
 		}
 
@@ -792,8 +792,8 @@ class PlayState extends FlxState
 		{
 			if (Math.abs(powerup.x - hero.x) < 16 && Math.abs(powerup.y - hero.y) < 16)
 			{
-				powerup.x = FlxMath.lerp(powerup.x, hero.x, 0.15);
-				powerup.y = FlxMath.lerp(powerup.y, hero.y, 0.15);
+				powerup.x = FlxMath.lerp(powerup.x, hero.x, 0.35);
+				powerup.y = FlxMath.lerp(powerup.y, hero.y, 0.135);
 			}
 		}
 

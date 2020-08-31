@@ -232,7 +232,7 @@ class HiScoresState extends FlxState
 		else
 		{
 			var _replay:String = sys.io.File.getContent("assets/data/attract.dnv");
-			FlxG.vcr.loadReplay(_replay, new PlayState(), ["ENTER"], null, restartGame);
+			FlxG.vcr.loadReplay(_replay, new PlayState(), ["ENTER", "X", "C", "O", "P", "SPACE", "ENTER", "ONE", "SHIFT", "CONTROL"], null, restartGame);
 		}
 	}
 
@@ -288,13 +288,13 @@ class HiScoresState extends FlxState
 		}
 		else
 		{
-			if (FlxG.keys.anyPressed([C]))
+			if (FlxG.keys.anyPressed([X, C, O, P, SPACE, ENTER, ONE, SHIFT, CONTROL]))
 			{
 				FlxG.switchState(new TitleState());
 			}
 		}
 
-		if (FlxG.keys.anyJustPressed([SPACE]) && !gameStarted)
+		if (FlxG.keys.anyPressed([X, C, O, P, SPACE, ENTER, ONE, SHIFT, CONTROL]) && !gameStarted)
 		{
 			FlxG.switchState(new TitleState());
 		}

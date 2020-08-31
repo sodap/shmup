@@ -75,7 +75,7 @@ class TitleState extends FlxState
 		titleTimeout.start(15, timeout, 1);
 
 		gameOverText = new FlxBitmapText(silverFont);
-		gameOverText.text = "PRESS SPACE \n TO START";
+		gameOverText.text = "PRESS X+C \n TO START";
 		gameOverText.alignment = FlxTextAlign.CENTER;
 		gameOverText.letterSpacing = 1;
 		gameOverText.lineSpacing = 1;
@@ -139,7 +139,7 @@ class TitleState extends FlxState
 	{
 		super.update(elapsed);
 
-		if (FlxG.keys.anyJustPressed([SPACE]) && !gameStarted)
+		if (FlxG.keys.anyPressed([C]) && FlxG.keys.anyPressed([X]) && !gameStarted)
 		{
 			gameStarted = true;
 			blinkTimer.active = false;

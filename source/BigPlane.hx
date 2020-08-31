@@ -47,7 +47,7 @@ class BigPlane extends Enemy
 		super.start(x, y);
 		setDifficulty();
 		angle = 0;
-		var direction = x > FlxG.width / 2 ? -120 : 30;
+		var direction = x > FlxG.width / 2 ? -120 : -30;
 		velocity.set(SPEED, 0);
 		velocity.rotate(FlxPoint.weak(0, 0), direction);
 		// tween1.onUpdate = shoot;

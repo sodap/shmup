@@ -286,6 +286,13 @@ class HiScoresState extends FlxState
 				}
 			}
 		}
+		else
+		{
+			if (FlxG.keys.anyPressed([C]))
+			{
+				FlxG.switchState(new TitleState());
+			}
+		}
 
 		if (FlxG.keys.anyJustPressed([SPACE]) && !gameStarted)
 		{

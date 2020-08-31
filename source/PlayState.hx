@@ -88,6 +88,7 @@ class PlayState extends FlxState
 
 	var gameOverCountDown:Int = 9;
 	var isGameOver:Bool = false;
+	var continueTimer:FlxTimer;
 
 	override public function create()
 	{
@@ -390,8 +391,8 @@ class PlayState extends FlxState
 	function startCountDown()
 	{
 		showContinueHud();
-		var _timer = new FlxTimer();
-		_timer.start(1.5, updateCountDown, 1);
+		continueTimer = new FlxTimer();
+		continueTimer.start(1.5, updateCountDown, 1);
 	}
 
 	function updateCountDown(timer:FlxTimer)
@@ -400,8 +401,7 @@ class PlayState extends FlxState
 		{
 			if (gameOverCountDown > 0)
 			{
-				var _timer = new FlxTimer();
-				_timer.start(1.5, updateCountDown, 1);
+				timer.start(1.5, updateCountDown, 1);
 				gameOverCountDown--;
 				updateCountdownHud(gameOverCountDown);
 			}
@@ -674,6 +674,34 @@ class PlayState extends FlxState
 		addEnemy(9, FlxG.height, 57.5, MediumPlane, enemyBullets);
 		addEnemy(FlxG.width - 35, FlxG.height, 58, MediumPlane, enemyBullets, false, false, true);
 
+		// 66
+		addEnemy(FlxG.width / 2 + 80, FlxG.height + 20, 64, BigPlane, enemyBullets, true, true, true);
+		addEnemy(FlxG.width / 2 - 80, FlxG.height + 45, 64, BigPlane, enemyBullets, true, true, true);
+		addEnemy(FlxG.width / 2 + 1, -50, 65, RedPlane, enemyBullets, false, false);
+		addEnemy(FlxG.width / 2 + 32, -50, 65.5, RedPlane, enemyBullets, false, false);
+		addEnemy(FlxG.width / 2 - 1, -50, 68, RedPlane, enemyBullets, false, false);
+		addEnemy(FlxG.width / 2 - 32, -50, 68.5, RedPlane, enemyBullets, false, false, true);
+		addEnemy(FlxG.width / 2 + 1, -50, 69, RedPlane, enemyBullets, false, false);
+		addEnemy(FlxG.width / 2 + 32, -50, 69.5, RedPlane, enemyBullets, false, false);
+		addEnemy(FlxG.width / 2 - 1, -50, 70, RedPlane, enemyBullets, false, false);
+		addEnemy(FlxG.width / 2 - 32, -50, 70.5, RedPlane, enemyBullets, false, false);
+		addEnemy(FlxG.width / 2 + 1, -50, 71, RedPlane, enemyBullets, false, false);
+		addEnemy(FlxG.width / 2 + 32, -50, 71.5, RedPlane, enemyBullets, false, false);
+		addEnemy(FlxG.width / 2 - 1, -50, 72, RedPlane, enemyBullets, false, false);
+		addEnemy(FlxG.width / 2 - 32, -50, 72.5, RedPlane, enemyBullets, false, false, true);
+		addEnemy(FlxG.width / 2 + 1, -50, 73, RedPlane, enemyBullets, false, false);
+		addEnemy(FlxG.width / 2 + 32, -50, 73.5, RedPlane, enemyBullets, false, false);
+		addEnemy(FlxG.width / 2 - 1, -50, 74, RedPlane, enemyBullets, false, false);
+		addEnemy(FlxG.width / 2 - 32, -50, 74.5, RedPlane, enemyBullets, false, false);
+		addEnemy(FlxG.width / 2 + 1, -50, 75, RedPlane, enemyBullets, false, false);
+		addEnemy(FlxG.width / 2 + 32, -50, 75.5, RedPlane, enemyBullets, false, false);
+		addEnemy(FlxG.width / 2 - 1, -50, 78, RedPlane, enemyBullets, false, false);
+		addEnemy(FlxG.width / 2 - 32, -50, 78.5, RedPlane, enemyBullets, false, false, true);
+		addEnemy(FlxG.width / 2 + 1, -50, 79, RedPlane, enemyBullets, false, false);
+		addEnemy(FlxG.width / 2 + 32, -50, 79.5, RedPlane, enemyBullets, false, false);
+		addEnemy(FlxG.width / 2 - 1, -50, 80, RedPlane, enemyBullets, false, false);
+		addEnemy(FlxG.width / 2 - 32, -50, 80.5, RedPlane, enemyBullets, false, false);
+
 		// 11
 
 		/*
@@ -738,7 +766,7 @@ class PlayState extends FlxState
 
 		if (checkWinCondition())
 		{
-			loopGame(3);
+			loopGame(1.5);
 			trace('game won');
 		}
 
@@ -769,9 +797,22 @@ class PlayState extends FlxState
 			}
 		}
 
-		if (FlxG.keys.anyJustPressed([SPACE]) && isGameOver)
+		if (FlxG.keys.anyJustPressed([SPACE, ENTER, ONE, SHIFT, CONTROL]) && isGameOver)
 		{
 			continueGame();
+		}
+		if (FlxG.keys.anyJustPressed([X, O]) && isGameOver)
+		{
+			if (gameOverCountDown > 0)
+			{
+				continueTimer.start(1.5, updateCountDown, 1);
+				gameOverCountDown--;
+				updateCountdownHud(gameOverCountDown);
+			}
+			else
+			{
+				continueTimer.start(0.15, updateCountDown, 1);
+			}
 		}
 
 		if (FlxG.keys.anyPressed([ENTER]) && Reg.replaying)

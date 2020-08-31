@@ -38,5 +38,5 @@
 - ~~Show Hi-Scores in attract mode~~
 - ~~Hi-Scores Input~~
 - ~~How To Play Screen (DONT)~~
-- Boss
-- Record/Edit a cool gameplay for attract mode
+- ~~Boss (just 2x big enemies)~~
+- ~~Record/Edit a cool gameplay for attract mode~~

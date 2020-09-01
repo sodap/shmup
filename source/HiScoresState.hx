@@ -2,7 +2,6 @@ package;
 
 import Explosion;
 import TitleState;
-import cpp.NativeString;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
@@ -20,6 +19,7 @@ import flixel.text.FlxText;
 import flixel.util.FlxTimer;
 import haxe.Timer;
 
+// import cpp.NativeString;
 class HiScoresState extends FlxState
 {
 	var background:FlxBackdrop;
@@ -231,7 +231,8 @@ class HiScoresState extends FlxState
 		}
 		else
 		{
-			var _replay:String = sys.io.File.getContent("assets/data/attract.dnv");
+			var _replay:String = openfl.Assets.getText("assets/data/attract.dnv");
+			Reg.attractMode = _replay;
 			FlxG.vcr.loadReplay(_replay, new PlayState(), ["ENTER", "X", "C", "O", "P", "SPACE", "ENTER", "ONE", "SHIFT", "CONTROL"], null, restartGame);
 		}
 	}

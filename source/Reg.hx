@@ -13,4 +13,5 @@ class Reg
 	public static var inputNewScore:Bool = false;
 	public static var lastKey:Int = 0;
 	public static var goToTitle:Bool = false;
+	public static var attractMode:String = "fail";
 }

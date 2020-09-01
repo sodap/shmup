@@ -73,7 +73,7 @@ class MediumPlane extends Enemy
 			bullets.add(bullet1);
 			bullets.add(bullet2);
 			bullets.add(bullet3);
-			trace("medium plane shooting");
+			// trace("medium plane shooting");
 			hasAmmo = false;
 		}
 	}

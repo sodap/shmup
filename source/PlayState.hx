@@ -21,7 +21,9 @@ import flixel.tweens.FlxTween;
 import flixel.util.FlxTimer;
 import haxe.Timer;
 import lime.utils.Assets;
-import sys.io.File;
+import openfl.Assets;
+
+// import sys.io.File;
 
 class HudText extends FlxBitmapText
 {
@@ -102,6 +104,7 @@ class PlayState extends FlxState
 
 		FlxG.mouse.visible = false;
 		super.create();
+		Reg.attractMode = openfl.Assets.getText("assets/data/attract.dnv");
 		background = new FlxBackdrop("assets/images/background.png", 0, 0, true, true, 0, 0);
 		background.velocity.set(0, 24 + 4 * rank);
 		add(background);
@@ -178,15 +181,16 @@ class PlayState extends FlxState
 		Reg.replaying = true;
 		Reg.recording = false;
 		var save:String = FlxG.vcr.stopRecording(false);
-		sys.io.File.saveContent("assets/data/attract.dnv", save);
+		// sys.io.File.saveContent("assets/data/attract.dnv", save);
 		FlxG.save.data.attractMode = save;
-		var _replay:String = sys.io.File.getContent("assets/data/attract.dnv");
+		Reg.attractMode = save;
+		var _replay:String = Reg.attractMode; // sys.io.File.getContent("assets/data/attract.dnv");
 		FlxG.vcr.loadReplay(_replay, new PlayState(), [], null, startAttractMode);
 	}
 
 	function startAttractMode()
 	{
-		var _replay:String = sys.io.File.getContent("assets/data/attract.dnv");
+		var _replay:String = Reg.attractMode; // sys.io.File.getContent("assets/data/attract.dnv");
 		FlxG.vcr.loadReplay(_replay, FlxG.state, ["ANY"], null, endAttractMode);
 	}
 
@@ -442,11 +446,11 @@ class PlayState extends FlxState
 				gameOverText.visible = true;
 				for (i in 0...8)
 				{
-					trace('Is it $i highscore');
+					// trace('Is it $i highscore');
 					if (Reg.finalScore > FlxG.save.data.hiScores[i].score)
 					{
 						Reg.inputNewScore = true;
-						trace('new hiscore! position: i');
+						// trace('new hiscore! position: i');
 						break;
 					}
 				}

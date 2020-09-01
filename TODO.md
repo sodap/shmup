@@ -40,3 +40,5 @@
 - ~~How To Play Screen (DONT)~~
 - ~~Boss (just 2x big enemies)~~
 - ~~Record/Edit a cool gameplay for attract mode~~
+- ~~Add sounds~~
+- ~~Prepare HTML5~~

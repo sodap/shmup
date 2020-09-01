@@ -78,7 +78,9 @@ class Enemy extends FlxSprite
 		{
 			ended = hasEnded();
 			if (ended)
-				trace('enemy exit');
+			{
+				// trace('enemy exit');
+			}
 		}
 	}
 }

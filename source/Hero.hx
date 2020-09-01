@@ -14,6 +14,7 @@ import lime.utils.Assets;
 
 class Hero extends FlxSprite
 {
+	var shootSounds:Int = 1;
 	var autoShootTimer:FlxTimer;
 	var FIRE_RATE:Float = 0.15;
 	var SPEED:Float = 150;
@@ -119,6 +120,7 @@ class Hero extends FlxSprite
 			bullets.add(_newBullet);
 		}
 
+		FlxG.sound.play('assets/sounds/shoot4.wav', 0.35, false);
 		autoShootTimer.start(FIRE_RATE);
 	}
 

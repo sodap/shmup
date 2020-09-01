@@ -16,6 +16,8 @@ import flixel.math.FlxRandom;
 import flixel.text.FlxBitmapText;
 import flixel.text.FlxText;
 import flixel.tile.FlxTilemap;
+import flixel.tweens.FlxEase;
+import flixel.tweens.FlxTween;
 import flixel.util.FlxTimer;
 import haxe.Timer;
 import lime.utils.Assets;
@@ -84,11 +86,14 @@ class PlayState extends FlxState
 	var gameOverText:FlxBitmapText;
 	var readyText:FlxBitmapText;
 	var attractModeText:FlxBitmapText;
+	var musicCredits:FlxBitmapText;
 	var countDownText:HudText;
 
 	var gameOverCountDown:Int = 9;
 	var isGameOver:Bool = false;
 	var continueTimer:FlxTimer;
+
+	var explosionSounds:Array<String> = ["explosion0.wav", "explosion1.wav"];
 
 	override public function create()
 	{
@@ -145,7 +150,6 @@ class PlayState extends FlxState
 		scoreFont = FlxBitmapFont.fromAngelCode("assets/fonts/tacticalbitScores_0.png", "assets/fonts/tacticalbitScores.fnt");
 		highlightScoreFont = FlxBitmapFont.fromAngelCode("assets/fonts/tacticalbitScoresHighlight_0.png", "assets/fonts/tacticalbitScores.fnt");
 
-		createHud(4, 4);
 		if (Reg.replaying)
 		{
 			trace('attract mode started');
@@ -154,7 +158,9 @@ class PlayState extends FlxState
 		else
 		{
 			FlxG.vcr.stopReplay();
+			FlxG.sound.playMusic("assets/music/bomblastic.ogg", 0.46, true);
 		}
+		createHud(4, 4);
 	}
 
 	function startRecording()
@@ -204,10 +210,33 @@ class PlayState extends FlxState
 		restartGame();
 	}
 
+	function hideRecommendedMusic(timer:FlxTimer)
+	{
+		var tween1 = FlxTween.tween(musicCredits, {alpha: 0}, 1, {ease: FlxEase.quadOut});
+	}
+
 	function createHud(marginX:Float, marginY:Float)
 	{
 		var lineHeight = 9;
 		var hudY = -3 + marginY;
+
+		if (!Reg.replaying) // FlxG.sound.music != null && FlxG.sound.music.playing)
+		{
+			var theme:String = FlxG.random.getObject(['BOMBLASTIC\nby hernán marandino']);
+			musicCredits = new FlxBitmapText(silverFont);
+			musicCredits = new FlxBitmapText(silverFont);
+			musicCredits.text = 'music:\n$theme';
+			musicCredits.alignment = FlxTextAlign.LEFT;
+			musicCredits.letterSpacing = 1;
+			musicCredits.lineSpacing = 1;
+			musicCredits.padding = 0;
+			musicCredits.x = -2 + marginX * 3;
+			musicCredits.y = FlxG.height - 80;
+			var _ntimer = new FlxTimer();
+			_ntimer.start(5, hideRecommendedMusic, 1);
+			musicCredits.scrollFactor.set(0, 0);
+			add(musicCredits);
+		}
 
 		var rankTitle = new FlxBitmapText(silverFont);
 		rankTitle = new FlxBitmapText(silverFont);
@@ -245,13 +274,13 @@ class PlayState extends FlxState
 		add(scoreTitle);
 
 		continueText = new FlxBitmapText(silverFont);
-		continueText.text = "CONTINUE?";
+		continueText.text = 'CONTINUE WITH\n50% SCORE?\n\n\n\n(PRESS SPACE)';
 		continueText.alignment = FlxTextAlign.CENTER;
 		continueText.letterSpacing = 1;
 		continueText.lineSpacing = 1;
 		continueText.padding = 0;
 		continueText.x = FlxG.width / 2 - continueText.width / 2;
-		continueText.y = FlxG.height / 2 - 16;
+		continueText.y = FlxG.height / 2 - 50;
 		continueText.scrollFactor.set(0, 0);
 		add(continueText);
 
@@ -403,6 +432,7 @@ class PlayState extends FlxState
 			{
 				timer.start(1.5, updateCountDown, 1);
 				gameOverCountDown--;
+				FlxG.sound.play('assets/sounds/ticks.wav', 1, false);
 				updateCountdownHud(gameOverCountDown);
 			}
 			else
@@ -420,6 +450,9 @@ class PlayState extends FlxState
 						break;
 					}
 				}
+				FlxG.sound.play('assets/sounds/gameover.wav', 1, false);
+				if (FlxG.sound.music != null && FlxG.sound.music.playing)
+					FlxG.sound.music.stop();
 				Reg.goToTitle = true;
 				Reg.finalScore = score;
 				var _timer = new FlxTimer();
@@ -800,6 +833,7 @@ class PlayState extends FlxState
 		if (FlxG.keys.anyJustPressed([SPACE, ENTER, ONE, SHIFT, CONTROL]) && isGameOver)
 		{
 			continueGame();
+			FlxG.sound.play('assets/sounds/continue.wav', 1, false);
 		}
 		if (FlxG.keys.anyJustPressed([X, O]) && isGameOver)
 		{
@@ -807,6 +841,7 @@ class PlayState extends FlxState
 			{
 				continueTimer.start(1.5, updateCountDown, 1);
 				gameOverCountDown--;
+				FlxG.sound.play('assets/sounds/ticks.wav', 1, false);
 				updateCountdownHud(gameOverCountDown);
 			}
 			else
@@ -842,7 +877,7 @@ class PlayState extends FlxState
 		var _timer = new FlxTimer();
 		_timer.start(0.25, spawnHero);
 		hideContinueHud();
-		score = 0;
+		score = Std.int(score * 0.5);
 		lives = 3;
 		for (enemy in enemies)
 		{
@@ -859,12 +894,14 @@ class PlayState extends FlxState
 	{
 		bomb.kill();
 		hero.bombs++;
+		FlxG.sound.play('assets/sounds/bomb.wav', 0.8, false);
 		updateBombsHud(hero.bombs);
 	}
 
 	function getPowerup(hero:Hero, powerup:Powerup)
 	{
 		powerup.kill();
+		FlxG.sound.play('assets/sounds/powerup.wav', 0.8, false);
 		hero.addPower();
 	}
 
@@ -874,6 +911,7 @@ class PlayState extends FlxState
 		{
 			score += 100;
 			powerup.pickup();
+			FlxG.sound.play('assets/sounds/medal.wav', 0.8, false);
 			updateScoreText(score);
 		}
 	}
@@ -887,6 +925,7 @@ class PlayState extends FlxState
 			bombEffects.add(_newBombFX);
 			hero.bombs--;
 			updateBombsHud(hero.bombs);
+			FlxG.sound.play('assets/sounds/useBomb.wav', 1, false);
 		}
 
 		for (_bullet in enemyBullets)
@@ -906,6 +945,7 @@ class PlayState extends FlxState
 			var _newExplosion = explosions.recycle(Explosion);
 			_newExplosion.start(hero.x - _newExplosion.width / 2, hero.y - _newExplosion.height / 2);
 			explosions.add(_newExplosion);
+			FlxG.sound.play('assets/sounds/death.wav', 1, false);
 			remove(hero);
 			lives--;
 			hero.kill();
@@ -947,6 +987,8 @@ class PlayState extends FlxState
 			return;
 		if (enemy.getDamage(bullet == null))
 		{
+			var _explosionAsset:String = FlxG.random.getObject(explosionSounds);
+			FlxG.sound.play('assets/sounds/$_explosionAsset', 1, false);
 			if (enemy.spawnBomb)
 			{
 				spawnBomb(enemy.x, enemy.y);
@@ -984,7 +1026,7 @@ class PlayState extends FlxState
 			if (Std.int(score / 10000) != Std.int((score + enemy.scoreValue) / 10000))
 				increaseRank();
 
-			score += enemy.scoreValue;
+			score += enemy.scoreValue * (1 + loops) + 10 * rank;
 			updateScoreText(score);
 			enemy.ended = true;
 		}

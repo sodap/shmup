@@ -267,6 +267,7 @@ class HiScoresState extends FlxState
 			{
 				var _string = String.fromCharCode(Reg.lastKey).toUpperCase();
 				newScoreText.text += _string;
+				FlxG.sound.play('assets/sounds/type.wav', 1, false);
 				// scoreTextCursor.x += 11;
 				if (newScoreText.text.length >= 3)
 				{

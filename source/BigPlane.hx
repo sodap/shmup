@@ -34,7 +34,7 @@ class BigPlane extends Enemy
 	{
 		SPEED = Std.int(BASESPEED * 0.5) + 4 * rank + 2 * loop;
 		health = 90 + Std.int(4 * rank) + Std.int(loop * 2);
-		FIRE_RATE = 2 + FlxMath.bound((2 - 0.1 * rank - 0.1 * loop), 0, 2);
+		FIRE_RATE = 2 + FlxMath.bound((2 - 0.15 * rank - 0.1 * loop), 0, 2);
 	}
 
 	function onAnimationFinished(_anim_name:String)

@@ -150,6 +150,8 @@ class TitleState extends FlxState
 			gameOverText.y = FlxG.height / 2 + 48;
 			var _timer = new FlxTimer();
 			_timer.start(1.5, startGame, 1);
+			titleTimeout.active = false;
+			FlxG.sound.play('assets/sounds/startgame.wav', 1, false);
 			//	continueGame();
 		}
 	}
